@@ -1,6 +1,13 @@
 {
-  "name": "package",
+  "name": "<%= _.slugify(appname) %>",
   "version": "0.0.0",
-  "dependencies": {}
+  "dependencies": {<% if (frameworkSelected == 'bootstrap' && preprocessorSelected == 'sass') { %>
+    "bootstrap": "~3.0.0",<% } %><% if (frameworkSelected == 'foundation') { %>
+    "foundation": "~4.3.2",<% } %><% if (frameworkSelected == 'pure') { %>
+    "pure": "~0.2.0",<% } %><% if (includeRequireJS) { %>
+    "requirejs": "~2.1.4",<% } %>
+    "modernizr": "~2.6.2",
+    "jquery": "~1.9.1"
+  },
+  "devDependencies": {}
 }
-

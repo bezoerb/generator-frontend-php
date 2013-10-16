@@ -53,12 +53,45 @@ module.exports = function (grunt) {
 					'<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
 				]
 			}
-		},
+		},<% if (preprocessorSelected === 'sass') { %>
+		compass: {
+			options: {
+				sassDir: '<%%= yeoman.app %>/styles',
+				cssDir: '.tmp/styles',
+				generatedImagesDir: '.tmp/images/generated',
+				imagesDir: '<%%= yeoman.app %>/images',
+				javascriptsDir: '<%%= yeoman.app %>/scripts',
+				/*fontsDir: '<%%= yeoman.app %>/styles/fonts',*/
+				importPath: '<%%= yeoman.app %>/components',
+				httpImagesPath: '/images',
+				httpGeneratedImagesPath: '/images/generated',
+				httpFontsPath: '/styles/fonts',
+				relativeAssets: false
+			},
+			dist: {},
+			server: {
+				options: {
+					debugInfo: true
+				}
+			}
+		},<% } else if (preprocessorSelected === 'less') { %>
+		less: {
+			all: {
+				options: {
+					paths: ['<%%= yeoman.app %>/styles'],
+					//yuicompress: true,
+					optimization: 0
+				},
+				files: [
+					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '<%%= yeoman.dist %>/styles', ext: '.css' }
+				]
+			}
+		},<% } %>
 
 		php2html: {
 			all: {
 				options: {
-					// relative links should be renamed from .php to .html
+				// relative links should be renamed from .php to .html
 					processLinks: true
 				},
 				files: [
@@ -109,7 +142,6 @@ module.exports = function (grunt) {
 				}
 			}
 		},<% } else if (testFramework === 'jasmine') { %>
-
 		jasmine: {
 			all: {
 				options: {
@@ -124,7 +156,7 @@ module.exports = function (grunt) {
 					}
 				}
 			}
-		},<% } %><% if (includeRequireJS) { %>
+		},<% } %>
 		requirejs: {
 			all: {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
@@ -147,16 +179,16 @@ module.exports = function (grunt) {
 			options: {
 				exclude: [
 					'modernizr',<% if (testFramework === 'qunit') { %>
-					'qunit',<% } else if (testFramework === 'mocha') { %>
+					'qunit'<% } else if (testFramework === 'mocha') { %>
 					'mocha',
-					'chai',<% } else if (testFramework === 'jasmine') { %>
+					'chai'<% } else if (testFramework === 'jasmine') { %>
 					'jasmine'<% } %>
 				]
 			},
 			all: {
 				rjsConfig: '<%%= yeoman.app %>/scripts/config.js'
 			}
-		},<% } %>
+		},
 		open: {
 			server: {
 				path: 'http://localhost:<%%= connect.options.port %>'

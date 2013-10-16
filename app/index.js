@@ -7,6 +7,9 @@ var yeoman = require('yeoman-generator');
 var FrontendGenerator = module.exports = function FrontendGenerator(args, options, config) {
 	yeoman.generators.Base.apply(this, arguments);
 
+	this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
+	this.mainJsFile = '';
+
 	this.on('end', function () {
 		this.installDependencies({ skipInstall: options['skip-install'] });
 	});
@@ -65,12 +68,6 @@ FrontendGenerator.prototype.askFor = function askFor() {
 					value: 'sass'
 				}
 			]
-		},
-		{
-			type: 'confirm',
-			name: 'includeRequireJS',
-			message: 'Would you like to include RequireJS (for AMD support)?',
-			default: true
 		},
 		{
 			type: 'list',

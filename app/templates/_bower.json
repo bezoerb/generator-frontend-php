@@ -2,13 +2,14 @@
   "name": "<%= _.slugify(appname) %>",
   "version": "0.0.0",
   "dependencies": {<% if (frameworkSelected == 'bootstrap' && preprocessorSelected == 'sass') { %>
-    "sass-bootstrap": "~3.0.0",<% } %><% if (frameworkSelected == 'bootstrap') { %>
-    "bootstrap": "~3.0.0",<% } %><% if (frameworkSelected == 'foundation') { %>
-    "foundation": "~4.3.2",<% } %><% if (frameworkSelected == 'pure') { %>
-    "pure": "~0.2.0",<% } %><% if (includeRequireJS) { %>
-    "requirejs": "~2.1.4",<% } %>
-    "modernizr": "~2.6.2",
-    "jquery": "~1.9.1"
+    "sass-bootstrap": "*",<% } %><% if (frameworkSelected == 'bootstrap') { %>
+    "bootstrap": "*",<% } else if (frameworkSelected == 'foundation') { %>
+    "foundation": "*",<% } %><% if (frameworkSelected == 'foundation' && preprocessorSelected != 'sass') { %>
+    "bower-foundation-css": "*",<% } %><% if (frameworkSelected == 'pure') { %>
+    "pure": "*",<% } %>
+    "requirejs": "*",
+    "modernizr": "*",
+    "jquery": "*"
   },
   "devDependencies": {}
 }

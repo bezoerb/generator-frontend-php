@@ -169,53 +169,91 @@ FrontendGenerator.prototype.projectfiles = function projectfiles() {
 
 FrontendGenerator.prototype.requirejs = function requirejs() {
 	var requiredScripts = ['app', 'jquery'];
-
-	if (this.includeRequireJS) {
-		var requiredScriptsString = '[';
-		for(var i = 0; i < requiredScripts.length; i++) {
-			requiredScriptsString += '\''+requiredScripts[i]+'\'';
-			if((i+1) < requiredScripts.length) {
-				requiredScriptsString += ', ';
-			}
-		}
-		requiredScriptsString += ']';
-
-		this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', ['bower_components/requirejs/require.js'], {
-			'data-main': 'scripts/main'
-		});
-
-		// add a basic config file, rest wiull be done by grunt bower task
-		this.write('app/scripts/config.js',[
-			'require.config({',
-			'    paths: {',
-			'',
-			'    },',
-			'    shim: {',
-			'',
-			'    }',
-			'});'
-		].join('\n'));
-
-		// add a basic amd module
-		this.write('app/scripts/app.js', [
-			'/*global define */',
-			'define([], function () {',
-			'    \'use strict\';\n',
-			'    return \'\\\'Moin \\\'Moin!\';',
-			'});'
-		].join('\n'));
-
-
-
-		this.mainJsFile = [
-			'require(' + requiredScriptsString + ', function (app, $) {',
-			'    \'use strict\';',
-			'    // use app here',
-			'    console.log(app);',
-			'    console.log(\'Running jQuery %s\', $().jquery);',
-			'});'
+	var templateLibraryPath;
+	var templateLibraryShim;
+	if(this.frameworkSelected == 'bootstrap') {
+		requiredScripts.push('bootstrap');
+		templateLibraryPath = ',\n        bootstrap: \'..bower_components/bootstrap/dist/js/bootstrap\'\n    },';
+		templateLibraryShim = '        bootstrap: {deps: [\'jquery\'], exports: \'jquery\'}';
+	} else if(this.frameworkSelected == 'foundation') {
+		requiredScripts.push('foundation/foundation');
+		templateLibraryPath = ',\n        foundation: \'../bower_components/foundation/js/foundation\'\n    },';
+		templateLibraryShim = [
+			'        \'foundation/foundation\' : { deps: [\'jquery\'], exports: \'Foundation\' },',
+			'        \'foundation/foundation.alerts\': { deps: [\'jquery\'], exports: \'Foundation.libs.alerts\' },',
+			'        \'foundation/foundation.clearing\': { deps: [\'jquery\'], exports: \'Foundation.libs.clearing\' },',
+			'        \'foundation/foundation.cookie\': { deps: [\'jquery\'], exports: \'Foundation.libs.cookie\' },',
+			'        \'foundation/foundation.dropdown\': { deps: [\'jquery\'], exports: \'Foundation.libs.dropdown\' },',
+			'        \'foundation/foundation.forms\': { deps: [\'jquery\'], exports: \'Foundation.libs.forms\' },',
+			'        \'foundation/foundation.joyride\': { deps: [\'jquery\'], exports: \'Foundation.libs.joyride\' },',
+			'        \'foundation/foundation.magellan\': { deps: [\'jquery\'], exports: \'Foundation.libs.magellan\' },',
+			'        \'foundation/foundation.orbit\': { deps: [\'jquery\'], exports: \'Foundation.libs.orbit\' },',
+			'        \'foundation/foundation.placeholder\': { deps: [\'jquery\'], exports: \'Foundation.libs.placeholder\' },',
+			'        \'foundation/foundation.reveal\': { deps: [\'jquery\'], exports: \'Foundation.libs.reveal\' },',
+			'        \'foundation/foundation.section\': { deps: [\'jquery\'], exports: \'Foundation.libs.section\' },',
+			'        \'foundation/foundation.tooltips\': { deps: [\'jquery\'], exports: \'Foundation.libs.tooltips\' },',
+			'        \'foundation/foundation.topbar\': { deps: [\'jquery\'], exports: \'Foundation.libs.topbar\' }'
 		].join('\n');
+	} else {
+		templateLibraryShim = '';
+		templateLibraryPath = '    },';
 	}
+
+	var requiredScriptsString = '[';
+	for(var i = 0; i < requiredScripts.length; i++) {
+		requiredScriptsString += '\''+requiredScripts[i]+'\'';
+		if((i+1) < requiredScripts.length) {
+			requiredScriptsString += ', ';
+		}
+	}
+	requiredScriptsString += ']';
+
+	this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', ['scripts/config.js','bower_components/requirejs/require.js'], {
+		'data-main': 'scripts/main'
+	});
+
+	// add a basic config file, rest wiull be done by grunt bower task
+	this.write('app/scripts/config.js',[
+		'var require = {',
+		'    paths: {',
+		'		jquery: \'../bower_components/jquery/jquery\''+templateLibraryPath,
+		'    shim: {',
+		templateLibraryShim,
+		'    }',
+		'};'
+	].join('\n'));
+
+	// add a basic amd module
+	this.write('app/scripts/app.js', [
+		'/*global define */',
+		'define(function (require) {',
+		'    \'use strict\';\n',
+		'    // load dependencies',
+		'	 var $ = require(\'jquery\'),',
+		'	     self = {};\n',
+		'	 // API methods',
+		'	 $.extend(self, {\n',
+		'  	     /**',
+		'	      * App initialization',
+		'	      */',
+		'		 init: function init() {',
+		'		 	 log.debug(\'Running jQuery %s\', $().jquery);',
+		'	     }',
+		'	 });\n',
+		'	 return self;',
+		'});'
+	].join('\n'));
+
+
+
+	this.mainJsFile = [
+		'require(' + requiredScriptsString + ', function (app, $) {',
+		'    \'use strict\';',
+		'    // use app here',
+		'    console.log(app);',
+		'    console.log(\'Running jQuery %s\', $().jquery);',
+		'});'
+	].join('\n');
 };
 
 
@@ -235,52 +273,30 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 		'                <ul>'
 	];
 
-	if (!this.includeRequireJS) {
-		this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', [
-			'scripts/vendor/jquery/jquery.js',
-			'scripts/main.js'
-		]);
 
-		this.indexFile = this.appendFiles({
-			html: this.indexFile,
-			fileType: 'js',
-			optimizedPath: 'scripts/coffee.js',
-			sourceFileList: ['scripts/hello.js'],
-			searchPath: '.tmp'
-		});
-	}
+
 
 	if(this.frameworkSelected == 'bootstrap') {
 		// Add Twitter Bootstrap scripts
 		this.indexFile = this.appendStyles(this.indexFile, 'styles/vendor/bootstrap.css', [
-			'styles/vendor/bootstrap/bootstrap.css'
+			'bower_components/bootstrap/dist/bootstrap.css'
 		]);
 
 		defaults.push('Twitter Bootstrap 3');
 
 	} else if(this.frameworkSelected == 'pure') {
 		this.indexFile = this.appendStyles(this.indexFile, 'styles/vendor/pure.min.css', [
-			'styles/vendor/pure/pure-min.css'
+			'bower_components/pure/pure-min.css'
 		]);
 		defaults.push('PureCSS');
-	} else if(this.frameworkSelected == 'topcoat') {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/vendor/topcoat/css/topcoat-mobile-light.min.css', [
-			'styles/vendor/topcoat/css/topcoat-mobile-light.min.css'
-		]);
-		defaults.push('Topcoat');
 	} else if(this.frameworkSelected == 'foundation') {
 		this.indexFile = this.appendStyles(this.indexFile, 'styles/vendor/foundation/stylesheets/foundation-min.css', [
-			'styles/vendor/foundation/stylesheets/foundation-min.css'
+			'bower_components/bower-foundation-css/foundation.min.css'
 		]);
 		defaults.push('Foundation');
 	}
 
-	if (this.includeRequireJS) {
-		defaults.push('RequireJS');
-	} else {
-		this.mainJsFile = 'console.log(\'\\\'Allo \\\'Allo!\');';
-	}
-
+	defaults.push('RequireJS');
 
 
 	// iterate over defaults and create content string

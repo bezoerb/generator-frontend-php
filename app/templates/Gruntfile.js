@@ -76,14 +76,19 @@ module.exports = function (grunt) {
 			}
 		},<% } else if (preprocessorSelected === 'less') { %>
 		less: {
-			all: {
-				options: {
+			options: {
 					paths: ['<%%= yeoman.app %>/styles'],
 					//yuicompress: true,
 					optimization: 0
-				},
+			},
+			dist: {
 				files: [
-					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '<%%= yeoman.dist %>/styles', ext: '.css' }
+					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css' }
+				]
+			},
+			server: {
+				files: [
+					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css' }
 				]
 			}
 		},<% } %>
@@ -162,7 +167,7 @@ module.exports = function (grunt) {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 				options: {
 					baseUrl                 : '<%%= yeoman.app %>/scripts',
-					name                    : 'vendor/requirejs/require',
+					name                    : '../bower_components/require',
 					include                 : 'main',
 					out                     : '<%%= yeoman.dist %>/scripts/main.js',
 					mainConfigFile          : '<%%= yeoman.app %>/scripts/config.js',
@@ -188,6 +193,98 @@ module.exports = function (grunt) {
 			all: {
 				rjsConfig: '<%%= yeoman.app %>/scripts/config.js'
 			}
+		},
+		imagemin: {
+			dist: {
+				files: [{
+					expand: true,
+					cwd: '<%%= yeoman.app %>/images',
+					src: '{,*/}*.{png,jpg,jpeg}',
+					dest: '<%%= yeoman.dist %>/images'
+				}]
+            }
+        },
+        svgmin: {
+            dist: {
+                files: [{
+                    expand: true,
+                    cwd: '<%%= yeoman.app %>/images',
+                    src: '{,*/}*.svg',
+                    dest: '<%%= yeoman.dist %>/images'
+                }]
+            }
+        },
+        cssmin: {
+            dist: {
+                files: {
+                    '<%%= yeoman.dist %>/styles/main.css': [
+                        '.tmp/styles/{,*/}*.css',
+                        '<%%= yeoman.app %>/styles/{,*/}*.css'
+                    ]
+                }
+            }
+        },
+        htmlmin: {
+            dist: {
+                options: {
+                    /*removeCommentsFromCDATA: true,
+                    // https://github.com/yeoman/grunt-usemin/issues/44
+                    //collapseWhitespace: true,
+                    collapseBooleanAttributes: true,
+                    removeAttributeQuotes: true,
+                    removeRedundantAttributes: true,
+                    useShortDoctype: true,
+                    removeEmptyAttributes: true,
+                    removeOptionalTags: true*/
+                },
+                files: [{
+                    expand: true,
+                    cwd: '<%%= yeoman.app %>',
+					src: '*.html',
+					dest: '<%%= yeoman.dist %>'
+				}]
+			}
+		},
+		// Put files not handled in other tasks here
+		copy: {
+			dist: {
+				files: [{
+					expand: true,
+					dot: true,
+					cwd: '<%%= yeoman.app %>',
+					dest: '<%%= yeoman.dist %>',
+					src: [
+						'*.{ico,png,txt}',
+						'.htaccess',
+						'images/{,*/}*.{webp,gif}',
+						'styles/fonts/*'
+					]
+				}, {
+					expand: true,
+					cwd: '.tmp/images',
+					dest: '<%%= yeoman.dist %>/images',
+					src: [
+						'generated/*'
+					]
+				}]
+			}
+		},
+		concurrent: {
+			server: [<% if (preprocessorSelected === 'sass') { %>
+				'compass:server'<% } else if (preprocessorSelected === 'less') { %>
+				'less:server'<% } %>
+			],
+			test: [<% if (preprocessorSelected === 'sass') { %>
+				'compass'<% } else if (preprocessorSelected === 'less') { %>
+				'less'<% } %>
+			],
+			dist: [<% if (preprocessorSelected === 'sass') { %>
+				'compass:dist'm<% } else if (preprocessorSelected === 'less') { %>
+				'less:dist',<% } %>
+				'imagemin',
+				'svgmin',
+				'htmlmin'
+			]
 		},
 		open: {
 			server: {
@@ -247,8 +344,9 @@ module.exports = function (grunt) {
 
 		grunt.task.run([
 			'clean:server',
+			'concurrent:server',
 			'connect:livereload',
-			'open',
+			'open:server',
 			'watch'
 		]);
 	});
@@ -273,7 +371,17 @@ module.exports = function (grunt) {
 <% } %>
 	});
 
+
 	grunt.registerTask('build', [
+        'clean:dist',
+        'useminPrepare',
+        'concurrent:dist',
+        'requirejs',
+        'cssmin',
+        'usemin'
+    ]);
+
+	grunt.registerTask('build2', [
 		'bower',
 		'requirejs'
 	]);

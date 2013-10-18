@@ -1,0 +1,9 @@
+<% if (frameworkSelected == 'bootstrap') { %>
+@import "../bower_components/sass-bootstrap/lib/bootstrap";
+<% } else if (frameworkSelected == 'foundation') { %>
+@import "../bower_components/foundation/scss/foundation";
+<% } %>
+.hero-unit {
+    margin: 0 auto;
+
+}

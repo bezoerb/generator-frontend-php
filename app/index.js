@@ -64,7 +64,7 @@ FrontendGenerator.prototype.askFor = function askFor() {
 					value: 'less'
 				},
 				{
-					name: 'Sass',
+					name: 'Sass (requires Ruby and Compass)',
 					value: 'sass'
 				}
 			]
@@ -164,6 +164,17 @@ FrontendGenerator.prototype.h5bp = function h5bp() {
 FrontendGenerator.prototype.projectfiles = function projectfiles() {
 	this.copy('editorconfig', '.editorconfig');
 	this.copy('jshintrc', '.jshintrc');
+};
+
+FrontendGenerator.prototype.mainStylesheet = function mainStylesheet() {
+	if(this.preprocessorSelected == 'sass') {
+		this.copy('_main.scss', 'app/styles/main.scss');
+	} else if (this.preprocessorSelected == 'less') {
+		this.copy('_main.less', 'app/styles/main.less');
+	} else {
+		this.copy('main.css', 'app/styles/main.css');
+	}
+  
 };
 
 
@@ -274,24 +285,38 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 	];
 
 
-
-
-	if(this.frameworkSelected == 'bootstrap') {
+	// append styles
+	// with preprocessor sass bootstrap.scss or foundation.scss get included in main.scss file
+	// with preprocessor less bootstrap.less gets included 
+	if(this.preprocessorSelected == 'sass' && this.frameworkSelected == 'foundation' ) {
+		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+			'styles/main.css'
+		]);
+		defaults.push('Foundation');
+	} else if(this.preprocessorSelected == 'sass' && this.frameworkSelected == 'bootstrap') {
+		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+			'styles/main.css'
+		]);
+		defaults.push('Bootrstrap');
+	} else if (this.preprocessorSelected == 'less' && this.frameworkSelected == 'bootstrap') {
+		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+			'styles/main.css'
+		]);
+		defaults.push('Bootrstrap');
+	} else if(this.frameworkSelected == 'bootstrap') {
 		// Add Twitter Bootstrap scripts
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/vendor/bootstrap.css', [
-			'bower_components/bootstrap/dist/bootstrap.css'
+		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+			'bower_components/bootstrap/dist/bootstrap.css','styles/main.css'
 		]);
-
-		defaults.push('Twitter Bootstrap 3');
-
+		defaults.push('Bootrstrap');
 	} else if(this.frameworkSelected == 'pure') {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/vendor/pure.min.css', [
-			'bower_components/pure/pure-min.css'
+		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+			'bower_components/pure/pure-min.css','styles/main.css'
 		]);
-		defaults.push('PureCSS');
+		defaults.push('Pure CSS');
 	} else if(this.frameworkSelected == 'foundation') {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/vendor/foundation/stylesheets/foundation-min.css', [
-			'bower_components/bower-foundation-css/foundation.min.css'
+		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+			'bower_components/bower-foundation-css/foundation.min.css','styles/main.css'
 		]);
 		defaults.push('Foundation');
 	}
@@ -308,7 +333,7 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 	contentText = contentText.concat([
 		'                </ul>',
 		'                <p>installed.</p>',
-		'                <h3>Enjoy coding! - Yeoman</h3>',
+		'                <h3>Enjoy coding!</h3>',
 		''
 	]);
 

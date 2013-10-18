@@ -6,7 +6,8 @@
     "bootstrap": "*",<% } else if (frameworkSelected == 'foundation') { %>
     "foundation": "*",<% } %><% if (frameworkSelected == 'foundation' && preprocessorSelected != 'sass') { %>
     "bower-foundation-css": "*",<% } %><% if (frameworkSelected == 'pure') { %>
-    "pure": "*",<% } %>
+    "pure": "*",<% } else { %>
+    "normalize-css": "~2.1.3",<% } %>
     "requirejs": "*",
     "modernizr": "*",
     "jquery": "*"

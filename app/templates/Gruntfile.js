@@ -36,11 +36,15 @@ module.exports = function (grunt) {
 					'!<%%= yeoman.app %>/scripts/vendor'
 				],
 				tasks: ['jshint']
-			},
-			//styles: {
-			//	files: ['<%= yeoman.dist %>/styles/{,*/}*.css'],
-			//	tasks: ['copy:styles', 'autoprefixer']
-			//},
+			},<% if (preprocessorSelected === 'less') { %>
+			less: {
+				files: ['<%%= yeoman.app %>/styles/{,*/}*.less'],
+				tasks: ['less:server']
+			},<% } else if (preprocessorSelected === 'sass') { %>
+			compass: {
+				files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+				tasks: ['compass:server']
+			},<% } %>
 			livereload: {
 				options: {
 					livereload: LIVERELOAD_PORT
@@ -48,8 +52,8 @@ module.exports = function (grunt) {
 				files: [
 					'<%%= yeoman.app %>/{,*/}*.html',
 					'<%%= yeoman.app %>/{,*/}*.php',
-					'<%%= yeoman.app %>/scripts/src/{,*/}*.js',
-					'<%%= yeoman.app %>/styles/{,*/}*.{css,less,scss,sass}',
+					'{.tmp,<%%= yeoman.app %>}/scripts/src/{,*/}*.js',
+					'{.tmp,<%%= yeoman.app %>}/styles/{,*/}*.css',
 					'<%%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
 				]
 			}
@@ -62,7 +66,7 @@ module.exports = function (grunt) {
 				imagesDir: '<%%= yeoman.app %>/images',
 				javascriptsDir: '<%%= yeoman.app %>/scripts',
 				/*fontsDir: '<%%= yeoman.app %>/styles/fonts',*/
-				importPath: '<%%= yeoman.app %>/components',
+				importPath: '<%%= yeoman.app %>/bower_components',
 				httpImagesPath: '/images',
 				httpGeneratedImagesPath: '/images/generated',
 				httpFontsPath: '/styles/fonts',
@@ -279,7 +283,7 @@ module.exports = function (grunt) {
 				'less'<% } %>
 			],
 			dist: [<% if (preprocessorSelected === 'sass') { %>
-				'compass:dist'm<% } else if (preprocessorSelected === 'less') { %>
+				'compass:dist',<% } else if (preprocessorSelected === 'less') { %>
 				'less:dist',<% } %>
 				'imagemin',
 				'svgmin',

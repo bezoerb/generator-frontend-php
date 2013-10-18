@@ -104,7 +104,7 @@ module.exports = function (grunt) {
 					processLinks: true
 				},
 				files: [
-					{expand: true, cwd: yeomanConfig.app, src: ['**/*.php'], dest: yeomanConfig.dist, ext: '.html' }
+					{expand: true, cwd: yeomanConfig.app, src: ['**/*.php','!bower_components/**/*.php'], dest: yeomanConfig.dist, ext: '.html' }
 				]
 			}
 		},

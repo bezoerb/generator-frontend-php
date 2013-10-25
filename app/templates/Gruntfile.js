@@ -135,7 +135,7 @@ module.exports = function (grunt) {
 				options: {
 					// Pipe output console.log from your JS to grunt. False by default.
 					log: true,
-					urls: ['http://localhost:<%%= connect.options.port %>/test/qunit.html']
+					urls: ['http://localhost:<%%= connect.options.port %>/test/index.html']
 				}
 			}
 		},<% } else if (testFramework === 'mocha') { %>
@@ -147,14 +147,14 @@ module.exports = function (grunt) {
 					// http://visionmedia.github.com/mocha/#reporters
 					// Pipe output console.log from your JS to grunt. False by default.
 					reporter: 'Spec',
-					urls: ['http://localhost:<%%= connect.options.port %>/test/mocha.html']
+					urls: ['http://localhost:<%%= connect.options.port %>/test/index.html']
 				}
 			}
 		},<% } else if (testFramework === 'jasmine') { %>
 		jasmine: {
 			all: {
 				options: {
-					specs: '<%%= yeoman.app %>/test/jasmine/spec/*Spec.js',
+					specs: '<%%= yeoman.app %>/test/spec/*Spec.js',
 					host: 'http://localhost:<%%= connect.options.port %>/',
 					template: require('grunt-template-jasmine-requirejs'),
 					templateOptions: {
@@ -319,11 +319,8 @@ module.exports = function (grunt) {
 				options: {
 					middleware: function (connect) {
 						return [
-							gateway(__dirname + '/' + yeomanConfig.app, {
-								'.php': 'php-cgi'
-							}),
 							mountFolder(connect, '.tmp'),
-							mountFolder(connect, 'test')
+							mountFolder(connect, yeomanConfig.app)
 						];
 					}
 				}

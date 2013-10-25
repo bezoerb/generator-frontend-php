@@ -178,6 +178,35 @@ FrontendGenerator.prototype.mainStylesheet = function mainStylesheet() {
 };
 
 
+FrontendGenerator.prototype.addLayout = function gruntfile() {
+  var layoutStr = "<!--yeoman-welcome-->";
+
+  if(this.frameworkSelected) {
+    console.log(this.frameworkSelected +' was chosen');
+
+    // a framework was chosen
+    if(this.frameworkSelected == 'bootstrap'){
+      layoutStr = this.readFileAsString(path.join(this.sourceRoot(), 'layouts/bootstrap/index.html'));
+
+    }else if(this.frameworkSelected == 'pure'){
+
+      this.copy('layouts/pure/stylesheets/marketing.css', 'app/styles/marketing.css');
+      this.indexFile = this.appendStyles(this.indexFile, 'styles/marketing.css', [
+      'styles/marketing.css'
+      ]);
+      layoutStr = this.readFileAsString(path.join(this.sourceRoot(), 'layouts/pure/index.html'));
+
+    } else if(this.frameworkSelected == 'foundation'){
+
+      layoutStr = this.readFileAsString(path.join(this.sourceRoot(), 'layouts/foundation/index.html'));
+    }
+  }
+
+  // Replace the page logic comment with the layoutString
+  this.indexFile = this.indexFile.replace("<!--your page logic-->", layoutStr);
+};
+
+
 FrontendGenerator.prototype.requirejs = function requirejs() {
 	var requiredScripts = ['app', 'jquery'];
 	var templateLibraryPath;
@@ -227,7 +256,8 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 	this.write('app/scripts/config.js',[
 		'var require = {',
 		'    paths: {',
-		'		jquery: \'../bower_components/jquery/jquery\''+templateLibraryPath,
+		'        jquery: \'../bower_components/jquery/jquery\',',
+		'        loglevel: \'../bower_components/loglevel/dist/loglevel.min\''+templateLibraryPath,
 		'    shim: {',
 		templateLibraryShim,
 		'    }',
@@ -240,18 +270,19 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'define(function (require) {',
 		'    \'use strict\';\n',
 		'    // load dependencies',
-		'	 var $ = require(\'jquery\'),',
-		'	     self = {};\n',
-		'	 // API methods',
-		'	 $.extend(self, {\n',
-		'  	     /**',
-		'	      * App initialization',
-		'	      */',
-		'		 init: function init() {',
-		'		 	 log.debug(\'Running jQuery %s\', $().jquery);',
-		'	     }',
-		'	 });\n',
-		'	 return self;',
+		'    var $ = require(\'jquery\'),',
+		'        log = require(\'loglevel\'),',
+		'        self = {};\n',
+		'    // API methods',
+		'    $.extend(self, {\n',
+		'       /**',
+		'        * App initialization',
+		'	     */',
+		'        init: function init() {',
+		'            log.debug(\'Running jQuery %s\', $().jquery);',
+		'        }',
+		'    });\n',
+		'    return self;',
 		'});'
 	].join('\n'));
 
@@ -344,6 +375,26 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 		contentText = '<div class="hero-unit">\n' + contentText+'</div>\n';
 	}
 	this.indexFile = this.indexFile.replace('<!--yeoman-welcome-->', contentText);
+};
+
+
+FrontendGenerator.prototype.addTests = function gruntfile() {
+	this.mkdir('app/test');
+
+	// jasmine testframework selected
+	if (this.testFramework === 'jasmine') {
+		this.directory('test/jasmine', 'app/test');
+
+	// qunit testframework selected
+	} else if (this.testFramework === 'qunit') {
+		this.directory('test/qunit', 'app/test');
+		this.copy('test/qunit.html', 'app/test/index.html');
+
+	// mocha selected
+	} else if (this.testFramework === 'mocha') {
+		this.directory('test/mocha', 'app/test');
+		this.copy('test/mocha.html', 'app/test/index.html');
+	}
 };
 
 FrontendGenerator.prototype.app = function app() {

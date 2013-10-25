@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Basic Test Suite</title>
+        <!-- Load local QUnit. -->
+        <link rel="stylesheet" href="../bower_components/mocha/mocha.css" media="screen">
+        <script src="../bower_components/mocha/mocha.js"></script>
+        
+        <script>mocha.setup('bdd');</script>
+
+        <!-- assertion framework -->
+        <script src="../bower_components/chai/chai.js"></script>
+        <script>var expect = chai.expect</script>
+
+    </head>
+    <body>
+        <div id="mocha"></div>
+        <script src="../scripts/config.js"></script>
+        <script>require.paths.spec = '../../test/spec';</script>
+        <script data-main="runner" src="../bower_components/requirejs/require.js"></script>
+    </body>
+</html>

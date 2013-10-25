@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Basic Test Suite</title>
+    <!-- Load local QUnit. -->
+    <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css" media="screen">
+    <script src="../bower_components/qunit/qunit/qunit.js"></script>
+    <!--
+        "By default, QUnit runs tests when load event is triggered on the window.
+        If you're loading tests asynchronously, you can set this property to false,
+        then call QUnit.start() once everything is loaded." (source).
+
+        By putting QUnit.config.autostart = false; in a file loaded by requriejs we are basically setting up a race condition.
+        It works in Firefox and Safari because they take a little longer to load than Chrome and PhantomJS.
+    -->
+    <script>QUnit.config.autostart = false;</script>
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture">this had better work.</div>
+    <script src="../scripts/config.js"></script>
+    <script>require.paths.spec = '../test/spec';</script>
+    <script data-main="runner" src="../bower_components/requirejs/require.js"></script>
+</body>
+</html>

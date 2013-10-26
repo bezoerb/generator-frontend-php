@@ -81,18 +81,17 @@ module.exports = function (grunt) {
 		},<% } else if (preprocessorSelected === 'less') { %>
 		less: {
 			options: {
-					paths: ['<%%= yeoman.app %>/styles'],
-					//yuicompress: true,
-					optimization: 0
+                paths: ['<%%= yeoman.app %>/styles'],
+				optimization: 0
 			},
 			dist: {
 				files: [
-					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css' }
+					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css'}
 				]
 			},
 			server: {
 				files: [
-					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css' }
+					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css'}
 				]
 			}
 		},<% } %>

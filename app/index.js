@@ -213,7 +213,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 	var templateLibraryShim;
 	if(this.frameworkSelected == 'bootstrap') {
 		requiredScripts.push('bootstrap');
-		templateLibraryPath = ',\n        bootstrap: \'..bower_components/bootstrap/dist/js/bootstrap\'\n    },';
+		templateLibraryPath = ',\n        bootstrap: \'../bower_components/bootstrap/dist/js/bootstrap\'\n    },';
 		templateLibraryShim = '        bootstrap: {deps: [\'jquery\'], exports: \'jquery\'}';
 	} else if(this.frameworkSelected == 'foundation') {
 		requiredScripts.push('foundation/foundation');
@@ -236,7 +236,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		].join('\n');
 	} else {
 		templateLibraryShim = '';
-		templateLibraryPath = '    },';
+		templateLibraryPath = '\n    },';
 	}
 
 	var requiredScriptsString = '[';

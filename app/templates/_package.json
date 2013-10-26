@@ -33,7 +33,8 @@
 		"time-grunt": "~0.1.1",
 		"gateway": "~0.1.1",
 		"grunt-php2html": "~0.1.4",
-		"load-grunt-tasks": "~0.1.0"
+		"load-grunt-tasks": "~0.1.0",
+		"grunt-bower-requirejs": "~0.7.1"
 	},
 	"engines": {
     	"node": ">=0.8.0"

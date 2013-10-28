@@ -1,12 +1,12 @@
 {
-  "name": "generator-frontend",
+  "name": "generator-frontend-php",
   "version": "0.0.1",
-  "description": "A generator for Yeoman",
+  "description": "A generator for Yeoman with php support",
   "keywords": [
     "yeoman-generator"
   ],
-  "homepage": "https://github.com/bezoerb/generator-frontend",
-  "bugs": "https://github.com/bezoerb/generator-frontend/issues",
+  "homepage": "https://github.com/bezoerb/generator-frontend-php",
+  "bugs": "https://github.com/bezoerb/generator-frontend-php/issues",
   "author": {
     "name": "Ben Zörb",
     "email": "",
@@ -15,7 +15,7 @@
   "main": "app/index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/bezoerb/generator-frontend.git"
+    "url": "git://github.com/bezoerb/generator-frontend-php.git"
   },
   "scripts": {
     "test": "mocha"

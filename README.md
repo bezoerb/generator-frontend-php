@@ -1,4 +1,4 @@
-# generator-frontend [![Build Status](https://secure.travis-ci.org/bezoerb/generator-frontend.png?branch=master)](https://travis-ci.org/bezoerb/generator-frontend)
+# generator-frontend [![Build Status](https://secure.travis-ci.org/bezoerb/generator-frontend-php.png?branch=master)](https://travis-ci.org/bezoerb/generator-frontend-php)
 
 A generator for [Yeoman](http://yeoman.io).
 
@@ -46,9 +46,6 @@ Finally, initiate the generator:
 ```
 $ yo frontend-php
 ```
-
-### What's inside
-
 
 
 ## License

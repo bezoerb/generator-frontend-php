@@ -19,9 +19,21 @@ Not every new computer comes with a Yeoman pre-installed. He lives in the [npm](
 $ npm install -g yo
 ```
 
-### Yeoman Generators
+### PHP Frontend Generator
 
-Yeoman travels light. He didn't pack any generators when he moved in. You can think of a generator like a plug-in. You get to choose what type of application you wish to create, such as a Backbone application or even a Chrome extension.
+Generate static html files using php with the power of that nice gentleman.
+
+* Local Connect web-server
+* Live reloading
+* HTML5 Boilerplate
+* Integration of PureCSS, Bootstrap or Foundation
+* Compiling PHP templates to HTML
+* Compiling Sass and Less
+* RequireJS
+* JS testing with Mocha, Qunit or Jasmine
+* CSS and JS minification
+* Image optimization
+
 
 To install generator-frontend-php from npm, run:
 
@@ -36,15 +48,7 @@ $ yo frontend-php
 ```
 
 ### What's inside
-* Local Connect web-server
-* Live reloading
-* Compiling PHP templates to HTML
-* Compiling Sass and Less
-* RequireJS
-* JS testing with Mocha, Qunit or Jasmine
-* HTML5 Boilerplate
-* Integration of PureCSS, Bootstrap or Foundation
-* CSS and JS minification (`usemin`)
+
 
 
 ## License

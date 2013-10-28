@@ -4,37 +4,37 @@
 	"dependencies": {},
 	"devDependencies": {
 		"grunt": "~0.4.1",
-		"grunt-contrib-copy": "~0.4.1",
-		"grunt-contrib-concat": "~0.1.3",
-		"grunt-contrib-coffee": "~0.6.5",
-		"grunt-contrib-uglify": "~0.2.0",<% if (preprocessorSelected === 'sass') { %>
-		"grunt-contrib-compass": "~0.2.0",<% } else if (preprocessorSelected === 'less') { %>
-		"grunt-contrib-less": "~0.7.0",<% } %>
-		"grunt-contrib-jshint": "~0.4.1",
-		"grunt-contrib-cssmin": "~0.6.0",
-		"grunt-contrib-connect": "~0.2.0",
-		"grunt-contrib-clean": "~0.4.0",
-		"grunt-contrib-htmlmin": "~0.1.3",
-		"grunt-bower-requirejs": "~0.4.1",
-		"grunt-contrib-requirejs": "~0.4.0",
-		"grunt-contrib-imagemin": "~0.1.3",
-		"grunt-contrib-watch": "~0.4.0",<% if (testFramework === 'jasmine') { %>
-    	"grunt-contrib-jasmine": "~0.4.2",
-    	"grunt-template-jasmine-requirejs": "~0.1.7",<% } %>
-		"grunt-rev": "~0.1.0",
-		"grunt-usemin": "~0.1.10",<% if (testFramework === 'mocha') {  %>
-    	"grunt-mocha": "~0.4.1",<% } %>
-		"grunt-open": "~0.2.1",<% if (testFramework === 'qunit') {  %>
-    	"grunt-contrib-qunit": "~0.3.0",<% } %>
-		"grunt-svgmin": "~0.1.0",
-		"grunt-concurrent": "~0.1.0",
-		"matchdep": "~0.1.1",
-		"connect-livereload": "~0.1.4",
-		"time-grunt": "~0.1.1",
-		"gateway": "~0.1.1",
-		"grunt-php2html": "~0.1.4",
-		"load-grunt-tasks": "~0.1.0",
-		"grunt-bower-requirejs": "~0.7.1"
+		"grunt-contrib-copy": "*",
+		"grunt-contrib-concat": "*",
+		"grunt-contrib-coffee": "*",
+		"grunt-contrib-uglify": "*",<% if (preprocessorSelected === 'sass') { %>
+		"grunt-contrib-compass": "*",<% } else if (preprocessorSelected === 'less') { %>
+		"grunt-contrib-less": "*",<% } %>
+		"grunt-contrib-jshint": "*",
+		"grunt-contrib-cssmin": "*",
+		"grunt-contrib-connect": "*",
+		"grunt-contrib-clean": "*",
+		"grunt-contrib-htmlmin": "*",
+		"grunt-bower-requirejs": "*",
+		"grunt-contrib-requirejs": "*",
+		"grunt-contrib-imagemin": "*",
+		"grunt-contrib-watch": "*",<% if (testFramework === 'jasmine') { %>
+    	"grunt-contrib-jasmine": "*",
+    	"grunt-template-jasmine-requirejs": "*",<% } %>
+		"grunt-rev": "*",
+		"grunt-usemin": "*",<% if (testFramework === 'mocha') {  %>
+    	"grunt-mocha": "*",<% } %>
+		"grunt-open": "*",<% if (testFramework === 'qunit') {  %>
+    	"grunt-contrib-qunit": "*",<% } %>
+		"grunt-svgmin": "*",
+		"grunt-concurrent": "*",
+		"matchdep": "*",
+		"connect-livereload": "*",
+		"time-grunt": "*",
+		"gateway": "*",
+		"grunt-php2html": "*",
+		"load-grunt-tasks": "*",
+		"grunt-bower-requirejs": "*"
 	},
 	"engines": {
     	"node": ">=0.8.0"

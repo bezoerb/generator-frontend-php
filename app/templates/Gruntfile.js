@@ -100,19 +100,32 @@ module.exports = function (grunt) {
 			all: {
 				options: {
 				// relative links should be renamed from .php to .html
-					processLinks: true
+					processLinks: true,
+					process: function(html,cb){
+						// replace require block since is no more supported in usemin > 2.0.0
+						var result = html.replace(/<!--\sbuild:require\s+([^\s]+)(.|[\r\n])*data-main(.|[\r\n])*<!-- endbuild -->/,'<script src="$1"></script>');
+						cb(result);
+					}
 				},
 				files: [
-					{expand: true, cwd: yeomanConfig.app, src: ['**/*.php','!bower_components/**/*.php'], dest: yeomanConfig.dist, ext: '.html' }
+					{expand: true, cwd: yeomanConfig.app, src: ['**/*.php','!bower_components/**/*.php'], dest: '.tmp', ext: '.html' }
 				]
 			}
 		},
 
-		clean: {
-			server: '.tmp',
-			dist: ['<%%= yeoman.dist %>/scripts/main.js','<%%= yeoman.dist %>/scripts/main.js.map'],
-			bower: ['<%%= yeoman.app %>/scripts/vendor/*']
-		},
+        clean: {
+            dist: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '.tmp',
+                        '<%%= yeoman.dist %>/*',
+                        '!<%%= yeoman.dist %>/.git*'
+                    ]
+                }]
+            },
+            server: '.tmp'
+        },
 
 		// Testing Tools
 		jshint: {
@@ -170,7 +183,7 @@ module.exports = function (grunt) {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 				options: {
 					baseUrl                 : '<%%= yeoman.app %>/scripts',
-					name                    : '../bower_components/require',
+					name                    : '../bower_components/requirejs/require',
 					include                 : 'main',
 					out                     : '<%%= yeoman.dist %>/scripts/main.js',
 					mainConfigFile          : '<%%= yeoman.app %>/scripts/config.js',
@@ -197,6 +210,19 @@ module.exports = function (grunt) {
 				rjsConfig: '<%%= yeoman.app %>/scripts/config.js'
 			}
 		},
+        useminPrepare: {
+            options: {
+                dest: '<%%= yeoman.dist %>'
+            },
+            html: '.tmp/index.html'
+        },
+        usemin: {
+            options: {
+                dirs: ['<%%= yeoman.dist %>']
+            },
+            html: ['<%%= yeoman.dist %>/{,*/}*.html'],
+            css: ['<%%= yeoman.dist %>/styles/{,*/}*.css']
+        },
 		imagemin: {
 			dist: {
 				files: [{
@@ -248,6 +274,7 @@ module.exports = function (grunt) {
 				}]
 			}
 		},
+//		uglify: {},
 		// Put files not handled in other tasks here
 		copy: {
 			dist: {
@@ -269,7 +296,23 @@ module.exports = function (grunt) {
 					src: [
 						'generated/*'
 					]
+				}, {
+					expand: true,
+					cwd: '.tmp',
+					dest: '<%%= yeoman.dist %>',
+					src: [
+						'{,*/}*.html'
+					]
 				}]
+			},
+			prepare: {
+				expand: true,
+				cwd: '<%%= yeoman.app %>',
+				dest: '.tmp/',
+				src: [
+					'styles/**/*.{css,js}',
+					'bower_components/**/*.{css,js}'
+				]
 			}
 		},
 		concurrent: {
@@ -339,7 +382,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('server', function (target) {
 		if (target === 'dist') {
-			return grunt.task.run(['build', 'connect:dist:keepalive']);
+			return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
 		}
 
 		grunt.task.run([
@@ -374,10 +417,15 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('build', [
         'clean:dist',
+		'php2html',
+		'copy:prepare',
         'useminPrepare',
         'concurrent:dist',
+		'concat',
         'requirejs',
         'cssmin',
+		'uglify',
+		'copy:dist',
         'usemin'
     ]);
 

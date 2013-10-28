@@ -7,6 +7,40 @@ var yeoman = require('yeoman-generator');
 var FrontendGenerator = module.exports = function FrontendGenerator(args, options, config) {
 	yeoman.generators.Base.apply(this, arguments);
 
+	this.appendFiles = function appendFiles(htmlOrOptions, fileType, optimizedPath, sourceFileList, attrs, searchPath) {
+		var blocks, updatedContent;
+		var html = htmlOrOptions;
+		var files = '';
+
+		if (typeof htmlOrOptions === 'object') {
+			html = htmlOrOptions.html;
+			fileType = htmlOrOptions.fileType;
+			optimizedPath = htmlOrOptions.optimizedPath;
+			sourceFileList = htmlOrOptions.sourceFileList;
+			attrs = htmlOrOptions.attrs;
+			searchPath = htmlOrOptions.searchPath;
+		}
+
+		attrs = this.attributes(attrs);
+
+		if (fileType === 'js' || fileType === 'require') {
+			sourceFileList.forEach(function (el) {
+				files += '        <script ' + attrs + ' src="' + el + '"></script>\n';
+			});
+			blocks = this.generateBlock(fileType, optimizedPath, files, searchPath);
+			updatedContent = this.append(html, 'body', blocks);
+		} else if (fileType === 'css') {
+			sourceFileList.forEach(function (el) {
+				files += '        <link ' + attrs + ' rel="stylesheet" href="' + el  + '">\n';
+			});
+			blocks = this.generateBlock('css', optimizedPath, files, searchPath);
+			updatedContent = this.append(html, 'head', blocks);
+		}
+
+		// cleanup trailing whitespace
+		return updatedContent.replace(/[\t ]+$/gm, '');
+	};
+
 	this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
 	this.mainJsFile = '';
 
@@ -18,6 +52,8 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 };
 
 util.inherits(FrontendGenerator, yeoman.generators.Base);
+
+
 
 FrontendGenerator.prototype.askFor = function askFor() {
 	var cb = this.async();
@@ -248,7 +284,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 	}
 	requiredScriptsString += ']';
 
-	this.indexFile = this.appendScripts(this.indexFile, 'scripts/main.js', ['scripts/config.js','bower_components/requirejs/require.js'], {
+	this.indexFile = this.appendFiles(this.indexFile, 'require','scripts/main.js', ['scripts/config.js','bower_components/requirejs/require.js'], {
 		'data-main': 'scripts/main'
 	});
 
@@ -289,11 +325,10 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 
 
 	this.mainJsFile = [
-		'require(' + requiredScriptsString + ', function (app, $) {',
+		'require(' + requiredScriptsString + ', function (app) {',
 		'    \'use strict\';',
 		'    // use app here',
-		'    console.log(app);',
-		'    console.log(\'Running jQuery %s\', $().jquery);',
+		'    app.init()',
 		'});'
 	].join('\n');
 };
@@ -402,6 +437,6 @@ FrontendGenerator.prototype.app = function app() {
 	this.mkdir('app/scripts');
 	this.mkdir('app/styles');
 	this.mkdir('app/images');
-	this.write('app/index.html', this.indexFile);
+	this.write('app/index.php', this.indexFile);
 	this.write('app/scripts/main.js', this.mainJsFile);
 };

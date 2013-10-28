@@ -245,14 +245,18 @@ FrontendGenerator.prototype.addLayout = function gruntfile() {
 
 FrontendGenerator.prototype.requirejs = function requirejs() {
 	var requiredScripts = ['app', 'jquery'];
+	var inlineRequire = '';
+	var logCmd = '';
 	var templateLibraryPath;
 	var templateLibraryShim;
 	if(this.frameworkSelected == 'bootstrap') {
 		requiredScripts.push('bootstrap');
+		logCmd = '            log.debug(\' + Bootstrap \', \'3.0.0\');';
 		templateLibraryPath = ',\n        bootstrap: \'../bower_components/bootstrap/dist/js/bootstrap\'\n    },';
 		templateLibraryShim = '        bootstrap: {deps: [\'jquery\'], exports: \'jquery\'}';
 	} else if(this.frameworkSelected == 'foundation') {
 		requiredScripts.push('foundation/foundation');
+		logCmd = '            log.debug(\' + Foundation %s\', foundation.version);';
 		templateLibraryPath = ',\n        foundation: \'../bower_components/foundation/js/foundation\'\n    },';
 		templateLibraryShim = [
 			'        \'foundation/foundation\' : { deps: [\'jquery\'], exports: \'Foundation\' },',
@@ -308,14 +312,18 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'    // load dependencies',
 		'    var $ = require(\'jquery\'),',
 		'        log = require(\'loglevel\'),',
+		((this.frameworkSelected === 'foundation')?'        foundation = require(\'foundation/foundation\'),':''),
 		'        self = {};\n',
+		((this.frameworkSelected === 'bootstrap')?'    require(\'bootstrap\');\n':''),
 		'    // API methods',
 		'    $.extend(self, {\n',
 		'       /**',
 		'        * App initialization',
 		'	     */',
 		'        init: function init() {',
+		'            log.setLevel(0);',
 		'            log.debug(\'Running jQuery %s\', $().jquery);',
+		logCmd,
 		'        }',
 		'    });\n',
 		'    return self;',
@@ -328,7 +336,8 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'require(' + requiredScriptsString + ', function (app) {',
 		'    \'use strict\';',
 		'    // use app here',
-		'    app.init()',
+
+		'    app.init();',
 		'});'
 	].join('\n');
 };

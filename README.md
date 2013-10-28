@@ -23,25 +23,30 @@ $ npm install -g yo
 
 Yeoman travels light. He didn't pack any generators when he moved in. You can think of a generator like a plug-in. You get to choose what type of application you wish to create, such as a Backbone application or even a Chrome extension.
 
-To install generator-frontend from npm, run:
+To install generator-frontend-php from npm, run:
 
 ```
-$ npm install -g generator-frontend
+$ npm install -g generator-frontend-php
 ```
 
 Finally, initiate the generator:
 
 ```
-$ yo frontend
+$ yo frontend-php
 ```
 
-### Getting To Know Yeoman
-
-Yeoman has a heart of gold. He's a person with feelings and opinions, but he's very easy to work with. If you think he's too opinionated, he can be easily convinced.
-
-If you'd like to get to know Yeoman better and meet some of his friends, [Grunt](http://gruntjs.com) and [Bower](http://bower.io), check out the complete [Getting Started Guide](https://github.com/yeoman/yeoman/wiki/Getting-Started).
+### What's inside
+* Local Connect web-server
+* Live reloading
+* Compiling PHP templates to HTML
+* Compiling Sass and Less
+* RequireJS
+* JS testing with Mocha, Qunit or Jasmine
+* HTML5 Boilerplate
+* Integration of PureCSS, Bootstrap or Foundation
+* CSS and JS minification (`usemin`)
 
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+[MIT License](bezoerb.mit-license.org)

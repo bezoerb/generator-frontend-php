@@ -127,7 +127,7 @@ FrontendGenerator.prototype.askFor = function askFor() {
 	];
 
 	function getChoice(props, key, def) {
-		var choices = props[key],
+		var choices = props[key] || [],
 			result = def || null;
 
 		for (var i = 0; i < prompts.length; i++) {

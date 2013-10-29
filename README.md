@@ -1,4 +1,4 @@
-# generator-frontend [![Build Status](https://secure.travis-ci.org/bezoerb/generator-frontend-php.png?branch=master)](https://travis-ci.org/bezoerb/generator-frontend-php)
+# generator-frontend-php [![Build Status](https://secure.travis-ci.org/bezoerb/generator-frontend-php.png?branch=master)](https://travis-ci.org/bezoerb/generator-frontend-php)
 
 A generator for [Yeoman](http://yeoman.io).
 

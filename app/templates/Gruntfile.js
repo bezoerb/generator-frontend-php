@@ -130,7 +130,8 @@ module.exports = function (grunt) {
 		// Testing Tools
 		jshint: {
 			options: {
-				jshintrc: '.jshintrc'
+				jshintrc: '.jshintrc',
+				reporter: require('jshint-stylish')
 			},
 			all: [
 				'Gruntfile.js',

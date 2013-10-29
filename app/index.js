@@ -444,6 +444,8 @@ FrontendGenerator.prototype.addTests = function gruntfile() {
 FrontendGenerator.prototype.app = function app() {
 	this.mkdir('app');
 	this.mkdir('app/scripts');
+	this.mkdir('app/scripts/components');
+	this.mkdir('app/scripts/library');
 	this.mkdir('app/styles');
 	this.mkdir('app/images');
 	this.write('app/index.php', this.indexFile);

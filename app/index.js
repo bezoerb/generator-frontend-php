@@ -354,7 +354,7 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 	}
 
 	var contentText = [
-		'                <h1 class=\''+titleClass+'\'>\'Allo, \'Allo!</h1>',
+		'                <h1 class="'+titleClass+'">\'Allo, \'Allo!</h1>',
 		'                <p>You now have</p>',
 		'                <ul>'
 	];

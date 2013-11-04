@@ -33,6 +33,7 @@ Generate static html files using php with the power of that nice gentleman.
 * JS testing with Mocha, Qunit or Jasmine
 * CSS and JS minification
 * Image optimization
+* HTML and JS linting
 
 
 To install generator-frontend-php from npm, run:

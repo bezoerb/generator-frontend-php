@@ -3,6 +3,7 @@
 var LIVERELOAD_PORT = 35729,
 	lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT}),
 	gateway = require('gateway'),
+	path = require('path'),
 	mountFolder = function (connect, dir) {
 		return connect.static(require('path').resolve(dir));
 	};
@@ -335,7 +336,7 @@ module.exports = function (grunt) {
 		},
 		open: {
 			server: {
-				path: 'http://localhost:<%%= connect.options.port %>'
+				path: 'http://127.0.0.1:<%%= connect.options.port %>'
 			}
 		},
 		connect: {
@@ -349,7 +350,7 @@ module.exports = function (grunt) {
 					middleware: function (connect) {
 						return [
 							lrSnippet,
-							gateway(__dirname + '/' + yeomanConfig.app, {
+							gateway(__dirname + path.sep + yeomanConfig.app, {
 								'.php': 'php-cgi'
 							}),
 							mountFolder(connect, '.tmp'),

@@ -106,7 +106,8 @@ module.exports = function (grunt) {
 						// replace require block since is no more supported in usemin > 2.0.0
 						var result = html.replace(/<!--\sbuild:require\s+([^\s]+)(.|[\r\n])*data-main(.|[\r\n])*<!-- endbuild -->/,'<script src="$1"></script>');
 						cb(result);
-					}
+					},
+					docroot: '<%%= yeoman.app %>'
 				},
 				files: [
 					{expand: true, cwd: yeomanConfig.app, src: ['**/*.php','!bower_components/**/*.php'], dest: '.tmp', ext: '.html' }

@@ -256,7 +256,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		templateLibraryShim = '        bootstrap: {deps: [\'jquery\'], exports: \'jquery\'}';
 	} else if(this.frameworkSelected == 'foundation') {
 		requiredScripts.push('foundation/foundation');
-		logCmd = '            log.debug(\' + Foundation %s\', foundation.version);';
+		logCmd = '            log.debug(\'  + Foundation %s\', Foundation.version);';
 		templateLibraryPath = ',\n        foundation: \'../bower_components/foundation/js/foundation\'\n    },';
 		templateLibraryShim = [
 			'        \'foundation/foundation\' : { deps: [\'jquery\'], exports: \'Foundation\' },',
@@ -306,14 +306,15 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 
 	// add a basic amd module
 	this.write('app/scripts/app.js', [
-		'/*global define */',
+		'/*global define'+((this.frameworkSelected === 'foundation')?', Foundation':'')+' */',
 		'define(function (require) {',
 		'    \'use strict\';\n',
 		'    // load dependencies',
 		'    var $ = require(\'jquery\'),',
 		'        log = require(\'loglevel\'),',
-		((this.frameworkSelected === 'foundation')?'        foundation = require(\'foundation/foundation\'),':''),
 		'        self = {};\n',
+
+		((this.frameworkSelected === 'foundation')?'    require(\'foundation/foundation\');\n':''),
 		((this.frameworkSelected === 'bootstrap')?'    require(\'bootstrap\');\n':''),
 		'    // API methods',
 		'    $.extend(self, {\n',

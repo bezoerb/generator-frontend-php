@@ -42,12 +42,15 @@ To install generator-frontend-php from npm, run:
 $ npm install -g generator-frontend-php
 ```
 
+To make this work you need the `php-cgi` binaray in your PATH.
+
 Finally, initiate the generator:
 
 ```
 $ yo frontend-php
 ```
 
+Make shure you have php-cgi installed and in your Path
 
 ## License
 

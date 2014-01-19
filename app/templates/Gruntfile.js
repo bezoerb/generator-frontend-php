@@ -218,7 +218,7 @@ module.exports = function (grunt) {
                 dest: '<%%= yeoman.dist %>',
 				flow: {
 					html: {
-				    	steps: { 'js': ['concat', 'uglifyjs'], 'css': []},
+				    	steps: { 'js': ['concat', 'uglifyjs'], 'css': [<% if (preprocessorSelected === 'sass' && frameworkSelected === 'foundation') { %>'concat', 'cssmin'<% } %>]},
 				        post: {}
 				    }
 				}

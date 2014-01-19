@@ -225,15 +225,9 @@ FrontendGenerator.prototype.addLayout = function gruntfile() {
       layoutStr = this.readFileAsString(path.join(this.sourceRoot(), 'layouts/bootstrap/index.html'));
 
     }else if(this.frameworkSelected == 'pure'){
-
-      this.copy('layouts/pure/stylesheets/marketing.css', 'app/styles/marketing.css');
-      this.indexFile = this.appendStyles(this.indexFile, 'styles/marketing.css', [
-      'styles/marketing.css'
-      ]);
       layoutStr = this.readFileAsString(path.join(this.sourceRoot(), 'layouts/pure/index.html'));
 
     } else if(this.frameworkSelected == 'foundation'){
-
       layoutStr = this.readFileAsString(path.join(this.sourceRoot(), 'layouts/foundation/index.html'));
     }
   }
@@ -386,8 +380,9 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 		]);
 		defaults.push('Bootrstrap');
 	} else if(this.frameworkSelected == 'pure') {
+        this.copy('layouts/pure/stylesheets/marketing.css', 'app/styles/marketing.css');
 		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
-			'bower_components/pure/pure-min.css','styles/main.css'
+			'styles/marketing.css','bower_components/pure/pure-min.css','styles/main.css'
 		]);
 		defaults.push('Pure CSS');
 	} else if(this.frameworkSelected == 'foundation') {

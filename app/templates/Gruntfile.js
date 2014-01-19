@@ -215,7 +215,13 @@ module.exports = function (grunt) {
 		},
         useminPrepare: {
             options: {
-                dest: '<%%= yeoman.dist %>'
+                dest: '<%%= yeoman.dist %>',
+				flow: {
+					html: {
+				    	steps: { 'js': ['concat', 'uglifyjs'], 'css': []},
+				        post: {}
+				    }
+				}
             },
             html: '.tmp/index.html'
         },
@@ -248,13 +254,11 @@ module.exports = function (grunt) {
         },
         cssmin: {
             dist: {
-                files: {
-                    '<%%= yeoman.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css',
-                        '<%%= yeoman.app %>/styles/{,*/}*.css'
-                    ]
-                }
-            }
+                expand: true,
+                cwd: '.tmp/uncss/styles/',
+                src: ['*.css'],
+                dest: '<%%= yeoman.dist %>/styles/'
+			}
         },
         htmlmin: {
             dist: {
@@ -277,6 +281,32 @@ module.exports = function (grunt) {
 				}]
 			}
 		},
+		
+		uncss: {
+			dist: {
+				options: {
+					verbose:true,
+					ignore: [/* ignore css selectors for async content with complete selector or regexp */]
+				},
+				files: {
+					'.tmp/uncss/styles/main.css': ['.tmp/index.html']
+				}
+			}
+		},
+
+        rev: {
+            dist: {
+                files: {
+                    src: [
+                        '<%%= yeoman.dist %>/scripts/{,*/}*.js',
+                        '<%%= yeoman.dist %>/styles/{,*/}*.css',
+                        '<%%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
+                        '<%%= yeoman.dist %>/styles/fonts/*'
+                    ]
+                }
+            }
+        },
+		
 //		uglify: {},
 		// Put files not handled in other tasks here
 		copy: {
@@ -305,6 +335,13 @@ module.exports = function (grunt) {
 					dest: '<%%= yeoman.dist %>',
 					src: [
 						'{,*/}*.html'
+					]
+				}, {
+					expand: true,
+					cwd: '.tmp/concat/styles',
+					dest: '<%%= yeoman.dist %>/styles',
+					src: [
+						'{,*/}*.css'
 					]
 				}]
 			},
@@ -422,21 +459,21 @@ module.exports = function (grunt) {
 	grunt.registerTask('build', [
         'clean:dist',
 		'php2html',
+		'bower',
 		'copy:prepare',
         'useminPrepare',
         'concurrent:dist',
+		<% if (preprocessorSelected === 'sass' && frameworkSelected === 'foundation') { %>// not working cause of some weird bug in combination with foundation & sass
+		//<% } %>'uncss:dist',
 		'concat',
         'requirejs',
-        'cssmin',
 		'uglify',
 		'copy:dist',
-        'usemin'
+		'uglify',
+		'cssmin:dist',
+		'rev',
+	    'usemin'
     ]);
-
-	grunt.registerTask('build2', [
-		'bower',
-		'requirejs'
-	]);
 
 	grunt.registerTask('default', [
 		'test',

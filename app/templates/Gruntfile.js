@@ -464,6 +464,7 @@ module.exports = function (grunt) {
         'useminPrepare',
         'concurrent:dist',
 		<% if (preprocessorSelected === 'sass' && frameworkSelected === 'foundation') { %>// not working cause of some weird bug in combination with foundation & sass
+		// https://github.com/addyosmani/grunt-uncss/issues/43
 		//<% } %>'uncss:dist',
 		'concat',
         'requirejs',

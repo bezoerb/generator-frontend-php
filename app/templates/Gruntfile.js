@@ -218,7 +218,7 @@ module.exports = function (grunt) {
                 dest: '<%%= yeoman.dist %>',
 				flow: {
 					html: {
-				    	steps: { 'js': ['concat', 'uglifyjs'], 'css': [<% if (preprocessorSelected === 'sass' && frameworkSelected === 'foundation') { %>'concat', 'cssmin'<% } %>]},
+				    	steps: { 'js': ['concat', 'uglifyjs'], 'css': []},
 				        post: {}
 				    }
 				}
@@ -463,9 +463,7 @@ module.exports = function (grunt) {
 		'copy:prepare',
         'useminPrepare',
         'concurrent:dist',
-		<% if (preprocessorSelected === 'sass' && frameworkSelected === 'foundation') { %>// not working cause of some weird bug in combination with foundation & sass
-		// https://github.com/addyosmani/grunt-uncss/issues/43
-		//<% } %>'uncss:dist',
+		'uncss:dist',
 		'concat',
         'requirejs',
 		'uglify',

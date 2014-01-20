@@ -1,6 +1,6 @@
 {
   "name": "generator-frontend-php",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "A generator for Yeoman with php support",
   "keywords": [
     "yeoman-generator"

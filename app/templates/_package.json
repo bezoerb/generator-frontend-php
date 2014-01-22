@@ -29,7 +29,7 @@
 		"grunt-svgmin": "~0.2.0",
 		"grunt-concurrent": "~0.4.1",
 		"matchdep": "~0.3.0",
-	    "grunt-uncss": "git://github.com/bezoerb/grunt-uncss.git##44",
+	    "grunt-uncss": "~0.1.8",
 		"connect-livereload": "~0.3.0",
 		"time-grunt": "~0.1.1",
 		"gateway": "~0.1.1",

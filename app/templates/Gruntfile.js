@@ -146,7 +146,7 @@ module.exports = function (grunt) {
 				options: {
 					// Pipe output console.log from your JS to grunt. False by default.
 					log: true,
-					urls: ['http://localhost:<%%= connect.options.port %>/test/index.html']
+					urls: ['http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/test/index.html']
 				}
 			}
 		},<% } else if (testFramework === 'mocha') { %>
@@ -158,7 +158,7 @@ module.exports = function (grunt) {
 					// http://visionmedia.github.com/mocha/#reporters
 					// Pipe output console.log from your JS to grunt. False by default.
 					reporter: 'Spec',
-					urls: ['http://localhost:<%%= connect.options.port %>/test/index.html']
+					urls: ['http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/test/index.html']
 				}
 			}
 		},<% } else if (testFramework === 'jasmine') { %>
@@ -166,12 +166,12 @@ module.exports = function (grunt) {
 			all: {
 				options: {
 					specs: '<%%= yeoman.app %>/test/spec/*Spec.js',
-					host: 'http://localhost:<%%= connect.options.port %>/',
+					host: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/',
 					template: require('grunt-template-jasmine-requirejs'),
 					templateOptions: {
 						requireConfigFile: '<%%= yeoman.app %>/scripts/config.js',
 						requireConfig: {
-							baseUrl: '<%%= yeoman.app %>/scripts/'
+							baseUrl: '<%%= yeoman.app %>/bower_components'
 						}
 					}
 				}
@@ -191,7 +191,7 @@ module.exports = function (grunt) {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 				options: {
 					baseUrl                 : '<%%= yeoman.app %>/bower_components',
-					name                    : 'requirejs/require',
+					name                    : 'almond/almond',
 					include                 : 'main',
 					out                     : '<%%= yeoman.dist %>/scripts/main.js',
 					mainConfigFile          : '<%%= yeoman.app %>/scripts/config.js',
@@ -208,6 +208,8 @@ module.exports = function (grunt) {
 			options: {
                 baseUrl: '<%%= yeoman.app %>/bower_components',
 				exclude: [
+					'almond',
+					'requirejs',
 					'modernizr',<% if (testFramework === 'qunit') { %>
 					'qunit'<% } else if (testFramework === 'mocha') { %>
 					'mocha',
@@ -219,6 +221,55 @@ module.exports = function (grunt) {
 				rjsConfig: '<%%= yeoman.app %>/scripts/config.js'
 			}
 		},
+        modernizr: {
+            // [REQUIRED] Path to the build you're using for development.
+            'devFile': '.tmp/concat/scripts/vendor/modernizr.js',
+
+            // [REQUIRED] Path to save out the built file.
+            'outputFile': '.tmp/concat/scripts/vendor/modernizr.js',
+
+            // Based on default settings on http://modernizr.com/download/
+            'extra': {
+                'shiv': true,
+                'printshiv': false,
+                'load': true,
+                'mq': false,
+                'cssclasses': true
+            },
+
+            // Based on default settings on http://modernizr.com/download/
+            'extensibility': {
+                'addtest': false,
+                'prefixed': false,
+                'teststyles': false,
+                'testprops': false,
+                'testallprops': false,
+                'hasevents': false,
+                'prefixes': false,
+                'domprefixes': false
+            },
+
+            // By default, source is uglified before saving
+            'uglify': true,
+
+            // Define any tests you want to implicitly include.
+            'tests': [],
+
+            // By default, this task will crawl your project for references to Modernizr tests.
+            // Set to false to disable.
+            'parseFiles': true,
+
+            // When parseFiles = true, this task will crawl all *.js, *.css, *.scss files, except files that are in node_modules/.
+            // You can override this by defining a 'files' array below.
+            'files' : ['<%= yeoman.app %>/scripts/**/*.js','.tmp/uncss/**/*.css'],
+
+            // When parseFiles = true, matchCommunityTests = true will attempt to
+            // match user-contributed tests.
+            'matchCommunityTests': false,
+
+            // Have custom Modernizr tests? Add paths to their location here.
+            'customTests': []
+        },
         useminPrepare: {
             options: {
                 dest: '<%%= yeoman.dist %>',
@@ -387,7 +438,7 @@ module.exports = function (grunt) {
 			options: {
 				port: 9000,
 				// change this to '0.0.0.0' to access the server from outside
-				hostname: 'localhost'
+				hostname: '127.0.0.1'
 			},
 			livereload: {
 				options: {
@@ -474,6 +525,7 @@ module.exports = function (grunt) {
 		'uncss',
 		'concat',
         'requirejs',
+		'modernizr',
 		'uglify',
 		'copy:dist',
 		'uglify',

@@ -32,6 +32,7 @@ Generate static html files using php with the power of that nice gentleman.
 * RequireJS
 * JS testing with Mocha, Qunit or Jasmine
 * CSS and JS minification
+* Strip unused CSS with grunt-uncss
 * Image optimization
 * HTML and JS linting
 

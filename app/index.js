@@ -288,10 +288,16 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 
 	// add a basic config file, rest wiull be done by grunt bower task
 	this.write('app/scripts/config.js',[
+		'/* jshint -W098,-W079 */',
 		'var require = {',
+		'    baseUrl: \'../bower_components\',',
 		'    paths: {',
-		'        jquery: \'../bower_components/jquery/jquery\',',
-		'        loglevel: \'../bower_components/loglevel/dist/loglevel.min\''+templateLibraryPath,
+		'        main: \'../scripts/main\',',
+		'        app: \'../scripts/app\',',
+		'        components: \'../scripts/components\',',
+		'        libraries: \'../scripts/libraries\',',
+		'        jquery: \'jquery/jquery\',',
+		'        loglevel: \'loglevel/dist/loglevel.min\''+templateLibraryPath,
 		'    shim: {',
 		templateLibraryShim,
 		'    }',
@@ -306,10 +312,11 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'    // load dependencies',
 		'    var $ = require(\'jquery\'),',
 		'        log = require(\'loglevel\'),',
+		'        components = {},',
 		'        self = {};\n',
-
 		((this.frameworkSelected === 'foundation')?'    require(\'foundation/foundation\');\n':''),
 		((this.frameworkSelected === 'bootstrap')?'    require(\'bootstrap\');\n':''),
+		'    components.dummy = require(\'components/dummy\');',
 		'    // API methods',
 		'    $.extend(self, {\n',
 		'       /**',
@@ -319,6 +326,16 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'            log.setLevel(0);',
 		'            log.debug(\'Running jQuery %s\', $().jquery);',
 		logCmd,
+		'            log.debug(\'\');',
+		'            log.debug(\'Initializing components ...\');\n',
+		'            for (var key in components) {',
+		'                try {',
+		'                    components[key].init();',
+		'                } catch (err) {',
+		'                    log.debug(\'initialization failed for component \\\'\' + key + \'\\\'\');',
+		'                    log.error(err);',
+		'                }',
+		'            }',
 		'        }',
 		'    });\n',
 		'    return self;',
@@ -441,7 +458,9 @@ FrontendGenerator.prototype.app = function app() {
 	this.mkdir('app');
 	this.mkdir('app/scripts');
 	this.mkdir('app/scripts/components');
+	this.copy('scripts/dummy.js','app/scripts/components/dummy.js')
 	this.mkdir('app/scripts/library');
+	this.copy('scripts/polyfills.js','app/scripts/library/polyfills.js')
 	this.mkdir('app/styles');
 	this.mkdir('app/images');
 	this.write('app/index.php', this.indexFile);

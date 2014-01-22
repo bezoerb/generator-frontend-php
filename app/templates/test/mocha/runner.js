@@ -1,5 +1,5 @@
 require.config({
-	baseUrl: '../../scripts'
+	baseUrl: '../../bower_components'
 });
 
 // require the unit tests.

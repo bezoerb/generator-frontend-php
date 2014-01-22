@@ -27,10 +27,6 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		yeoman: yeomanConfig,
 		watch: {
-			bower: {
-				files: ['<%%= yeoman.app %>/scripts/vendor/**/*.js'],
-				tasks: ['bower']
-			},
 			javascript: {
 				files: [
 					'<%%= yeoman.app %>/scripts/**/*.js',
@@ -181,12 +177,21 @@ module.exports = function (grunt) {
 				}
 			}
 		},<% } %>
+		plato: {
+			options : {
+				jshint : grunt.file.readJSON('.jshintrc')
+			},
+			all: {
+				'src': ['Gruntfile.js','<%= yeoman.app %>/scripts/**/*.js','test/spec/**/*.js'],
+				'dest': 'docs/complexity'
+			}
+		},
 		requirejs: {
 			all: {
 				// Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 				options: {
-					baseUrl                 : '<%%= yeoman.app %>/scripts',
-					name                    : '../bower_components/requirejs/require',
+					baseUrl                 : '<%%= yeoman.app %>/bower_components',
+					name                    : 'requirejs/require',
 					include                 : 'main',
 					out                     : '<%%= yeoman.dist %>/scripts/main.js',
 					mainConfigFile          : '<%%= yeoman.app %>/scripts/config.js',
@@ -201,6 +206,7 @@ module.exports = function (grunt) {
 		},
 		bower: {
 			options: {
+                baseUrl: '<%%= yeoman.app %>/bower_components',
 				exclude: [
 					'modernizr',<% if (testFramework === 'qunit') { %>
 					'qunit'<% } else if (testFramework === 'mocha') { %>
@@ -218,7 +224,7 @@ module.exports = function (grunt) {
                 dest: '<%%= yeoman.dist %>',
 				flow: {
 					html: {
-				    	steps: { 'js': ['concat', 'uglifyjs'], 'css': []},
+                        steps: { 'js': ['concat', 'uglifyjs'], 'css': []},
 				        post: {}
 				    }
 				}
@@ -283,11 +289,11 @@ module.exports = function (grunt) {
 		},
 		
 		uncss: {
-			dist: {
-				options: {
-					verbose:true,
-					ignore: [/* ignore css selectors for async content with complete selector or regexp */]
-				},
+			options: {
+				verbose:true,
+				ignore: [/* ignore css selectors for async content with complete selector or regexp */]
+			},
+			main: {
 				files: {
 					'.tmp/uncss/styles/main.css': ['.tmp/index.html']
 				}
@@ -374,7 +380,7 @@ module.exports = function (grunt) {
 		},
 		open: {
 			server: {
-				path: 'http://127.0.0.1:<%%= connect.options.port %>'
+				path: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>'
 			}
 		},
 		connect: {
@@ -399,10 +405,11 @@ module.exports = function (grunt) {
 			},
 			test: {
 				options: {
+					hostname: 'localhost',
 					middleware: function (connect) {
 						return [
 							mountFolder(connect, '.tmp'),
-							mountFolder(connect, yeomanConfig.app),<% if (testFramework === 'jasmine') { %>
+							mountFolder(connect, yeomanConfig.app)<% if (testFramework === 'jasmine') { %>,
 							mountFolder(connect, '.')<% } %>
 						];
 					}
@@ -457,13 +464,14 @@ module.exports = function (grunt) {
 
 
 	grunt.registerTask('build', [
+		'test',
         'clean:dist',
 		'php2html',
 		'bower',
 		'copy:prepare',
         'useminPrepare',
         'concurrent:dist',
-		'uncss:dist',
+		'uncss',
 		'concat',
         'requirejs',
 		'uglify',
@@ -476,7 +484,7 @@ module.exports = function (grunt) {
 
 	grunt.registerTask('default', [
 		'test',
-		'build'
+		'server'
 	]);
 };
 

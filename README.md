@@ -31,10 +31,12 @@ Generate static html files using php with the power of that nice gentleman.
 * Compiling Sass and Less
 * RequireJS
 * JS testing with Mocha, Qunit or Jasmine
+* Plato Reports
 * CSS and JS minification
 * Strip unused CSS with grunt-uncss
 * Image optimization
 * HTML and JS linting
+* Custom Modernizr build
 
 
 To install generator-frontend-php from npm, run:

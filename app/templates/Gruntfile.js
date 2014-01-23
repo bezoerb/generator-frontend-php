@@ -182,7 +182,7 @@ module.exports = function (grunt) {
 				jshint : grunt.file.readJSON('.jshintrc')
 			},
 			all: {
-				'src': ['Gruntfile.js','<%= yeoman.app %>/scripts/**/*.js','test/spec/**/*.js'],
+				'src': ['Gruntfile.js','<%%= yeoman.app %>/scripts/**/*.js','test/spec/**/*.js'],
 				'dest': 'docs/complexity'
 			}
 		},

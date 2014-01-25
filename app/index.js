@@ -283,7 +283,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 	requiredScriptsString += ']';
 
 	this.indexFile = this.appendFiles(this.indexFile, 'require','scripts/main.js', ['scripts/config.js','bower_components/requirejs/require.js'], {
-		'data-main': 'scripts/main'
+		'data-main': 'main'
 	});
 
 	// add a basic config file, rest wiull be done by grunt bower task

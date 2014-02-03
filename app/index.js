@@ -3,7 +3,6 @@ var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 
-
 var FrontendGenerator = module.exports = function FrontendGenerator(args, options, config) {
 	yeoman.generators.Base.apply(this, arguments);
 
@@ -49,6 +48,8 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 	});
 
 	this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
+	
+	this.config.save();
 };
 
 util.inherits(FrontendGenerator, yeoman.generators.Base);
@@ -455,6 +456,7 @@ FrontendGenerator.prototype.addTests = function gruntfile() {
 };
 
 FrontendGenerator.prototype.app = function app() {
+	this.config.save();
 	this.mkdir('app');
 	this.mkdir('app/scripts');
 	this.mkdir('app/scripts/components');

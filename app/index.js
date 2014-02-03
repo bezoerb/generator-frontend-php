@@ -315,9 +315,9 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'        log = require(\'loglevel\'),',
 		'        components = {},',
 		'        self = {};\n',
-		((this.frameworkSelected === 'foundation')?'    require(\'foundation/foundation\');\n':''),
-		((this.frameworkSelected === 'bootstrap')?'    require(\'bootstrap\');\n':''),
-		'    components.dummy = require(\'component/dummy\');',
+		((this.frameworkSelected === 'foundation')?'    require(\'foundation/foundation\');\n':
+		((this.frameworkSelected === 'bootstrap')?'    require(\'bootstrap\');\n':'')),
+		'    components.dummy = require(\'component/dummy\');\n',
 		'    // API methods',
 		'    $.extend(self, {\n',
 		'       /**',

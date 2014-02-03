@@ -295,8 +295,8 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'    paths: {',
 		'        main: \'../scripts/main\',',
 		'        app: \'../scripts/app\',',
-		'        components: \'../scripts/components\',',
-		'        libraries: \'../scripts/libraries\',',
+		'        component: \'../scripts/component\',',
+		'        library: \'../scripts/library\',',
 		'        jquery: \'jquery/jquery\',',
 		'        loglevel: \'loglevel/dist/loglevel.min\''+templateLibraryPath,
 		'    shim: {',
@@ -317,7 +317,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'        self = {};\n',
 		((this.frameworkSelected === 'foundation')?'    require(\'foundation/foundation\');\n':''),
 		((this.frameworkSelected === 'bootstrap')?'    require(\'bootstrap\');\n':''),
-		'    components.dummy = require(\'components/dummy\');',
+		'    components.dummy = require(\'component/dummy\');',
 		'    // API methods',
 		'    $.extend(self, {\n',
 		'       /**',
@@ -459,8 +459,8 @@ FrontendGenerator.prototype.app = function app() {
 	this.config.save();
 	this.mkdir('app');
 	this.mkdir('app/scripts');
-	this.mkdir('app/scripts/components');
-	this.copy('scripts/dummy.js','app/scripts/components/dummy.js')
+	this.mkdir('app/scripts/component');
+	this.copy('scripts/dummy.js','app/scripts/component/dummy.js')
 	this.mkdir('app/scripts/library');
 	this.copy('scripts/polyfills.js','app/scripts/library/polyfills.js')
 	this.mkdir('app/styles');

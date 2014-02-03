@@ -3,6 +3,7 @@
 
 var path = require('path');
 var helpers = require('yeoman-generator').test;
+var assert = require('assert');
 
 
 describe('frontend-php generator', function () {
@@ -35,7 +36,9 @@ describe('frontend-php generator', function () {
 			'app/styles/main.css',
 			'app/scripts/config.js',
 			'app/scripts/app.js',
-			'app/scripts/main.js'
+			'app/scripts/main.js',
+			'app/scripts/component/dummy.js',
+			'app/scripts/library/polyfills.js'
 		];
 
 		helpers.mockPrompt(this.app, {
@@ -43,7 +46,7 @@ describe('frontend-php generator', function () {
 		});
 		this.app.options['skip-install'] = true;
 		this.app.run({}, function () {
-			helpers.assertFiles(expected);
+			assert.file(expected);
 			done();
 		});
 	});

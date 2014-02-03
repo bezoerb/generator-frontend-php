@@ -146,7 +146,7 @@ module.exports = function (grunt) {
 				options: {
 					// Pipe output console.log from your JS to grunt. False by default.
 					log: true,
-					urls: ['http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/test/index.html']
+					urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/index.html']
 				}
 			}
 		},<% } else if (testFramework === 'mocha') { %>
@@ -158,7 +158,7 @@ module.exports = function (grunt) {
 					// http://visionmedia.github.com/mocha/#reporters
 					// Pipe output console.log from your JS to grunt. False by default.
 					reporter: 'Spec',
-					urls: ['http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/test/index.html']
+					urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/index.html']
 				}
 			}
 		},<% } else if (testFramework === 'jasmine') { %>
@@ -166,7 +166,7 @@ module.exports = function (grunt) {
 			all: {
 				options: {
 					specs: '<%%= yeoman.app %>/test/spec/*Spec.js',
-					host: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/',
+					host: 'http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/',
 					template: require('grunt-template-jasmine-requirejs'),
 					templateOptions: {
 						requireConfigFile: '<%%= yeoman.app %>/scripts/config.js',
@@ -456,7 +456,8 @@ module.exports = function (grunt) {
 			},
 			test: {
 				options: {
-					hostname: 'localhost',
+					hostname: '127.0.0.1',
+					port: 9999,
 					middleware: function (connect) {
 						return [
 							mountFolder(connect, '.tmp'),

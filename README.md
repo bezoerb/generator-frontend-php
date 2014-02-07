@@ -53,7 +53,30 @@ Finally, initiate the generator:
 $ yo frontend-php
 ```
 
-Make shure you have php-cgi installed and in your Path
+
+### Installing php-cgi
+
+##### OSX
+
+The `php-cgi` binary can be installed via Homebrew by tapping the
+[homebrew-php](https://github.com/josegonzalez/homebrew-php) repository:
+
+```shell
+brew tap homebrew/dupes
+brew tap josegonzalez/homebrew-php
+brew install php54
+```
+
+##### Windows
+
+The `php-cgi` binary can be installed via [XAMPP](http://www.apachefriends.org/de/xampp-windows.html). 
+Here is how you can add the binary to your PATH: [Link](https://www.monosnap.com/image/psLZ5fpwuSsvJJeZPdklEjxMr)
+
+##### Ubuntu
+
+```shell
+sudo apt-get install php5-cgi
+```
 
 ## License
 

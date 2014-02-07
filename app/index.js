@@ -184,12 +184,8 @@ FrontendGenerator.prototype.bower = function bower() {
 	this.copy('_bower.json', 'bower.json');
 };
 
-FrontendGenerator.prototype.jshint = function jshint() {
-	this.copy('jshintrc', '.jshintrc');
-};
-
-FrontendGenerator.prototype.editorConfig = function editorConfig() {
-	this.copy('editorconfig', '.editorconfig');
+FrontendGenerator.prototype.prettifyconfig = function editorConfig() {
+	
 };
 
 FrontendGenerator.prototype.h5bp = function h5bp() {
@@ -201,6 +197,7 @@ FrontendGenerator.prototype.h5bp = function h5bp() {
 FrontendGenerator.prototype.projectfiles = function projectfiles() {
 	this.copy('editorconfig', '.editorconfig');
 	this.copy('jshintrc', '.jshintrc');
+	this.copy('prettifyrc', '.prettifyrc');
 };
 
 FrontendGenerator.prototype.mainStylesheet = function mainStylesheet() {
@@ -408,6 +405,10 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 			'bower_components/bower-foundation-css/foundation.min.css','styles/main.css'
 		]);
 		defaults.push('Foundation');
+	} else {
+		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+			'styles/main.css'
+		]);
 	}
 
 	defaults.push('RequireJS');

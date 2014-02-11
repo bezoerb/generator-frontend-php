@@ -96,28 +96,19 @@ module.exports = function (grunt) {
                 paths: ['<%%= yeoman.app %>/styles'],
 				optimization: 0
 			},
-			dist: {
-				files: [
-					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css'}
-				]
-			},
-			server: {
+			all: {
 				files: [
 					{expand: true, cwd:  '<%%= yeoman.app %>/styles', src: ['*.less'], dest: '.tmp/styles', ext: '.css'}
 				]
 			}
 		},<% } %>
+
 		php2html: {
 			all: {
 				options: {
-				// relative links should be renamed from .php to .html
+					// relative links should be renamed from .php to .html
 					processLinks: true,
                     htmlhint: true,
-					process: function(html,cb){
-						// replace require block since is no more supported in usemin > 2.0.0
-						var result = html.replace(/<!--\sbuild:require\s+([^\s]+)(.|[\r\n])*data-main(.|[\r\n])*<!-- endbuild -->/,'<script src="$1"></script>');
-						cb(result);
-					},
 					docroot: '<%%= yeoman.app %>'
 				},
 				files: [
@@ -274,6 +265,14 @@ module.exports = function (grunt) {
         /**
          * Performance optimization
          */
+        processhtml: {
+            dist: {
+                files: [<% if (php2htmlChoice === true) { %>
+                    {expand: true, cwd: '.tmp', src: ['**/*.html', '!bower_components/**/*.html'], dest: '.tmp'}<% } else { %>
+                    {expand: true, cwd: yeomanConfig.app, src: ['**/*.php', '!bower_components/**/*.php'], dest: '.tmp'}<% } %>
+                ]
+            }
+        },
         useminPrepare: {
             options: {
                 dest: '<%%= yeoman.dist %>',
@@ -282,15 +281,18 @@ module.exports = function (grunt) {
                         steps: { 'js': ['concat', 'uglifyjs'], 'css': []},
                         post: {}
 				    }
-				}
-            },
-            html: '.tmp/index.html'
+                }
+            },<% if (php2htmlChoice === true) { %>
+            html: ['.tmp/**/*.html', '!bower_components/**/*.html']<% } else { %>
+            html: ['.tmp/**/*.php', '!bower_components/**/*.php']<% } %>
         },
         usemin: {
             options: {
-                dirs: ['<%%= yeoman.dist %>']
-            },
-            html: ['<%%= yeoman.dist %>/{,*/}*.html'],
+                dirs: ['<%%= yeoman.dist %>'],
+                assetsDirs: ['<%%= yeoman.dist %>']
+            },<% if (php2htmlChoice === true) { %>
+            html: ['<%%= yeoman.dist %>/**/*.html'],<% } else { %>
+        	html: ['<%%= yeoman.dist %>/**/*.php'],<% } %>
             css: ['<%%= yeoman.dist %>/styles/{,*/}*.css']
         },
 		imagemin: {
@@ -357,8 +359,8 @@ module.exports = function (grunt) {
             all: {
                 expand: true,
                 cwd: '<%%= yeoman.dist %>',
-                ext: '.html',
-                src: ['**/*.html'],
+                ext: <% if (php2htmlChoice === true) { %>'.html'<% } else { %>'.php'<% } %>,
+                src: [<% if (php2htmlChoice === true) { %>'**/*.html'<% } else { %>'**/*.php'<% } %>],
                 dest: '<%%= yeoman.dist %>'
             }
         },
@@ -407,14 +409,7 @@ module.exports = function (grunt) {
 					cwd: '.tmp',
 					dest: '<%%= yeoman.dist %>',
 					src: [
-						'{,*/}*.html'
-					]
-				}, {
-					expand: true,
-					cwd: '<%%= yeoman.app %>',
-					dest: '<%%= yeoman.dist %>',
-					src: [
-						'{,*/}*.html'
+						<% if (php2htmlChoice === true) { %>'**/*.html'<% } else { %>'**/*.php'<% } %>
 					]
 				}, {
 					expand: true,
@@ -438,7 +433,7 @@ module.exports = function (grunt) {
 		concurrent: {
 			server: [<% if (preprocessorSelected === 'sass') { %>
 				'compass:server'<% } else if (preprocessorSelected === 'less') { %>
-				'less:server'<% } %>
+				'less'<% } %>
 			],
 			test: [<% if (preprocessorSelected === 'sass') { %>
 				'compass'<% } else if (preprocessorSelected === 'less') { %>
@@ -446,7 +441,7 @@ module.exports = function (grunt) {
 			],
 			dist: [<% if (preprocessorSelected === 'sass') { %>
 				'compass:dist',<% } else if (preprocessorSelected === 'less') { %>
-				'less:dist',<% } %>
+				'less',<% } %>
 				'imagemin',
 				'svgmin'
 			]
@@ -459,8 +454,9 @@ module.exports = function (grunt) {
 			app: {
 				path: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/index.php'
 			},
-			dist: {
-				path: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/index.html'
+			dist: {<% if (php2htmlChoice === true) { %>
+				path: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/index.html'<% } else { %>
+				path: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/index.php'<% } %>
 			}
 		},
 		connect: {
@@ -500,7 +496,10 @@ module.exports = function (grunt) {
 			dist: {
 				options: {
 					middleware: function (connect) {
-						return [
+						return [<% if (php2htmlChoice === false) { %>
+							gateway(__dirname + path.sep + yeomanConfig.dist, {
+								'.php': 'php-cgi'
+							}),<% } %>
 							mountFolder(connect, yeomanConfig.dist)
 						];
 					}
@@ -563,6 +562,7 @@ module.exports = function (grunt) {
         'php2html',
         'bower',
         'copy:prepare',
+        'processhtml',
         'useminPrepare',
         'concurrent:dist',
         'uncss',
@@ -575,8 +575,8 @@ module.exports = function (grunt) {
         'cssmin:dist',
         'rev',
         'usemin',
-		'prettify',
-		'htmlmin'
+		'prettify'<% if (php2htmlChoice === true) { %>,
+		'htmlmin'<% } %>
     ]);
 
 	grunt.registerTask('default', [

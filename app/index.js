@@ -2,10 +2,69 @@
 var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
+var cheerio = require('cheerio');
 
 var FrontendGenerator = module.exports = function FrontendGenerator(args, options, config) {
 	yeoman.generators.Base.apply(this, arguments);
 
+    this.domUpdate = function domUpdate(html, tagName, content, mode) {
+        var $ = cheerio.load(html),
+            container = tagName ? $(tagName) : $.root();
+
+
+        if (content !== undefined) {
+            if (mode === 'a') {
+                container.append(content);
+            } else if (mode === 'p') {
+                container.prepend(content);
+            } else if (mode === 'r') {
+                container.html(content);
+            } else if (mode === 'd') {
+                container.remove();
+            }
+            return $.html();
+        } else {
+            console.error('Please supply valid content to be updated.');
+        }
+    };
+
+    /**
+     * Generate a ProcessHtml-handler block.
+     * Needed for requirejs integration
+     *
+     * @param {String} blockType
+     * @param {String} optimizedPath
+     * @param {String} filesBlock
+     * @param {String|Array} searchPath
+     */
+    this.generateRequireBlock = function generateBlock(blockType, optimizedPath, filesBlock, searchPath) {
+        var blockStart;
+        var blockEnd;
+        var blockSearchPath = '';
+
+        if (searchPath !== undefined) {
+            if (util.isArray(searchPath)) {
+                searchPath = '{' + searchPath.join(',') + '}';
+            }
+            blockSearchPath = '(' + searchPath +  ')';
+        }
+
+        blockStart = '\n        <!-- build:' + blockType + blockSearchPath + ' ' + optimizedPath + ' -->\n';
+        blockEnd = '        <!-- /build -->\n';
+        return blockStart + filesBlock + blockEnd;
+    };
+
+	/**
+     * Append files 
+     * overwrite to add special requirejs block because usemin does not support requirejs anymore
+     *
+     * @param {String|Object} htmlOrOptions
+     * @param {String} fileType
+     * @param {String} optimizedPath
+     * @param {Array}  sourceFileList
+     * @param {Object} attrs
+     * @param {String} searchPath
+     */
 	this.appendFiles = function appendFiles(htmlOrOptions, fileType, optimizedPath, sourceFileList, attrs, searchPath) {
 		var blocks, updatedContent;
 		var html = htmlOrOptions;
@@ -22,18 +81,24 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 
 		attrs = this.attributes(attrs);
 
-		if (fileType === 'js' || fileType === 'require') {
+        if (fileType === 'require') {
+            sourceFileList.forEach(function (el) {
+                files += '<script ' + attrs + ' src="' + el + '"></script>\n';
+            });
+            blocks = this.generateRequireBlock('js', optimizedPath, files, searchPath);
+            updatedContent = this.append(html, '', blocks);
+        } else if (fileType === 'js') {
 			sourceFileList.forEach(function (el) {
-				files += '        <script ' + attrs + ' src="' + el + '"></script>\n';
+				files += '<script ' + attrs + ' src="' + el + '"></script>\n';
 			});
 			blocks = this.generateBlock(fileType, optimizedPath, files, searchPath);
-			updatedContent = this.append(html, 'body', blocks);
+			updatedContent = this.append(html, '', blocks);
 		} else if (fileType === 'css') {
 			sourceFileList.forEach(function (el) {
-				files += '        <link ' + attrs + ' rel="stylesheet" href="' + el  + '">\n';
+				files += '<link ' + attrs + ' rel="stylesheet" href="' + el  + '">\n';
 			});
 			blocks = this.generateBlock('css', optimizedPath, files, searchPath);
-			updatedContent = this.append(html, 'head', blocks);
+			updatedContent = this.append(html, '', blocks);
 		}
 
 		// cleanup trailing whitespace
@@ -41,6 +106,8 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 	};
 
 	this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
+	this.headerFile = this.readFileAsString(path.join(this.sourceRoot(),'includes', 'header.php'));
+	this.footerFile = this.readFileAsString(path.join(this.sourceRoot(),'includes', 'footer.php'));
 	this.mainJsFile = '';
 
 	this.on('end', function () {
@@ -65,6 +132,11 @@ FrontendGenerator.prototype.askFor = function askFor() {
 
 	var prompts = [
 		{
+		    type: 'confirm',
+		    name: 'php2htmlChoice',
+		    message: 'Would you like to convert PHP files to static HTML?',
+		    default: true
+		},{
 			type: 'list',
 			name: 'frameworkChoice',
 			message: 'Would you like to include a CSS framework?',
@@ -152,6 +224,7 @@ FrontendGenerator.prototype.askFor = function askFor() {
 		this.preprocessorSelected = getChoice(props, 'preprocessorChoice', 'nopreprocessor');
 		this.testFramework = getChoice(props, 'testChoice', 'mocha');
 		this.layoutChoice = props.layoutChoice;
+		this.php2htmlChoice = props.php2htmlChoice;
 
 		cb();
 	}.bind(this));
@@ -280,7 +353,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 	}
 	requiredScriptsString += ']';
 
-	this.indexFile = this.appendFiles(this.indexFile, 'require','scripts/main.js', ['scripts/config.js','bower_components/requirejs/require.js'], {
+	this.footerFile = this.appendFiles(this.footerFile, 'require','scripts/main.js', ['scripts/config.js','bower_components/requirejs/require.js'], {
 		'data-main': 'main'
 	});
 
@@ -374,39 +447,39 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 	// with preprocessor sass bootstrap.scss or foundation.scss get included in main.scss file
 	// with preprocessor less bootstrap.less gets included 
 	if(this.preprocessorSelected == 'sass' && this.frameworkSelected == 'foundation' ) {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/main.css'
 		]);
 		defaults.push('Foundation');
 	} else if(this.preprocessorSelected == 'sass' && this.frameworkSelected == 'bootstrap') {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/main.css'
 		]);
 		defaults.push('Bootrstrap');
 	} else if (this.preprocessorSelected == 'less' && this.frameworkSelected == 'bootstrap') {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/main.css'
 		]);
 		defaults.push('Bootrstrap');
 	} else if(this.frameworkSelected == 'bootstrap') {
 		// Add Twitter Bootstrap scripts
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'bower_components/bootstrap/dist/bootstrap.css','styles/main.css'
 		]);
 		defaults.push('Bootrstrap');
 	} else if(this.frameworkSelected == 'pure') {
         this.copy('layouts/pure/stylesheets/marketing.css', 'app/styles/marketing.css');
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/marketing.css','bower_components/pure/pure-min.css','styles/main.css'
 		]);
 		defaults.push('Pure CSS');
 	} else if(this.frameworkSelected == 'foundation') {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'bower_components/bower-foundation-css/foundation.min.css','styles/main.css'
 		]);
 		defaults.push('Foundation');
 	} else {
-		this.indexFile = this.appendStyles(this.indexFile, 'styles/main.css', [
+		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/main.css'
 		]);
 	}
@@ -461,11 +534,13 @@ FrontendGenerator.prototype.app = function app() {
 	this.mkdir('app');
 	this.mkdir('app/scripts');
 	this.mkdir('app/scripts/component');
-	this.copy('scripts/dummy.js','app/scripts/component/dummy.js')
+	this.copy('scripts/dummy.js','app/scripts/component/dummy.js');
 	this.mkdir('app/scripts/library');
-	this.copy('scripts/polyfills.js','app/scripts/library/polyfills.js')
+	this.copy('scripts/polyfills.js','app/scripts/library/polyfills.js');
 	this.mkdir('app/styles');
 	this.mkdir('app/images');
 	this.write('app/index.php', this.indexFile);
+	this.write('app/includes/header.php', this.headerFile);
+	this.write('app/includes/footer.php', this.footerFile);
 	this.write('app/scripts/main.js', this.mainJsFile);
 };

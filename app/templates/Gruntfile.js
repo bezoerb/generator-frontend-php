@@ -46,7 +46,7 @@ module.exports = function (grunt) {
             },<% if (preprocessorSelected === 'less') { %>
             less: {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.less'],
-                tasks: ['less:server']
+                tasks: ['less']
             },<% } else if (preprocessorSelected === 'sass') { %>
             compass: {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],

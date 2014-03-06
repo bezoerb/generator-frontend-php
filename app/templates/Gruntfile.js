@@ -557,10 +557,10 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('build', [
-        'test',
         'clean:dist',
-        'php2html',
         'bower',
+		'test',
+        'php2html',
         'copy:prepare',
         'processhtml',
         'useminPrepare',

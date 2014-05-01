@@ -14,8 +14,9 @@ module.exports = function (grunt) {
     // show elapsed time at the end
     require('time-grunt')(grunt);
     // load all grunt tasks
-    require('load-grunt-tasks')(grunt);
-
+    <% if (testFramework === 'jasmine') { %>
+    require('load-grunt-tasks')(grunt, {pattern: ['grunt-*', '!grunt-template-jasmine-requirejs']});<% } else { %>
+    require('load-grunt-tasks')(grunt);<% } %>
 
     // configurable paths
     var yeomanConfig = {
@@ -52,6 +53,10 @@ module.exports = function (grunt) {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
                 tasks: ['compass:server']
             },<% } %>
+            bower: {
+                files: ['<%%= yeoman.app %>/bower_components/**/*.js'],
+                tasks: ['bower']
+            },
             livereload: {
                 options: {
                     livereload: LIVERELOAD_PORT
@@ -580,6 +585,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('default', [
+        'bower',
         'test',
         'server'
     ]);

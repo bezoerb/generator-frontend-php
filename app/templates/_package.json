@@ -8,7 +8,7 @@
 		"grunt-contrib-concat": "~0.4.0",
 		"grunt-contrib-uglify": "~0.4.0",<% if (preprocessorSelected === 'sass') { %>
 		"grunt-contrib-compass": "~0.7.2",<% } else if (preprocessorSelected === 'less') { %>
-		"grunt-contrib-less": "~0.9.0",<% } %>
+		"grunt-contrib-less": "~0.11.0",<% } %>
 		"grunt-contrib-jshint": "~0.10.0",
 		"jshint-stylish": "~0.2.0",
 		"grunt-contrib-cssmin": "~0.9.0",
@@ -19,7 +19,7 @@
     	"grunt-contrib-requirejs": "~0.4.1",
 		"grunt-contrib-imagemin": "~0.7.0",
 		"grunt-contrib-watch": "~0.6.1",<% if (testFramework === 'jasmine') { %>
-    	"grunt-contrib-jasmine": "~0.5.2",
+    	"grunt-contrib-jasmine": "~0.5.3",
     	"grunt-template-jasmine-requirejs": "~0.1.7",<% } %>
 		"grunt-rev": "~0.1.0",
 		"grunt-usemin": "~2.1.1",<% if (testFramework === 'mocha') {  %>

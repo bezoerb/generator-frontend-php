@@ -30,7 +30,7 @@ Generate static html files using php with the power of that nice gentleman.
 * Compiling PHP templates to HTML
 * Compiling Sass and Less
 * RequireJS
-* JS testing with Mocha, Qunit or Jasmine
+* JS testing with Mocha, Qunit, Jasmine or DalekJS
 * Plato Reports
 * CSS and JS minification
 * Strip unused CSS with grunt-uncss

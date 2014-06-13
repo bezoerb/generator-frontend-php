@@ -1,5 +1,5 @@
 require.config({
-	baseUrl: '../../bower_components'
+	baseUrl: '../bower_components'
 });
 
 //phantom.log('test');

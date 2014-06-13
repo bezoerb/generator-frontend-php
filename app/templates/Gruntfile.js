@@ -14,7 +14,7 @@ module.exports = function (grunt) {
     // show elapsed time at the end
     require('time-grunt')(grunt);
     // load all grunt tasks
-    <% if (testFramework === 'jasmine') { %>
+    <% if (jasmineTest) { %>
     require('load-grunt-tasks')(grunt, {pattern: ['grunt-*', '!grunt-template-jasmine-requirejs']});<% } else { %>
     require('load-grunt-tasks')(grunt);<% } %>
 
@@ -139,16 +139,16 @@ module.exports = function (grunt) {
                 // no tests on external code, won't make you happy
                 '!<%%= yeoman.app %>/scripts/vendor/**/*.js'
             ]
-        },<% if (testFramework === 'qunit') { %>
+        },<% if (qunitTest) { %>
         qunit: {
             all: {
                 options: {
                     // Pipe output console.log from your JS to grunt. False by default.
                     log: true,
-                    urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/index.html']
+                    urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/qunit.html']
                 }
             }
-        },<% } else if (testFramework === 'mocha') { %>
+        },<% } if (mochaTest) { %>
         mocha: {
             all: {
                 options: {
@@ -157,14 +157,14 @@ module.exports = function (grunt) {
                     // http://visionmedia.github.com/mocha/#reporters
                     // Pipe output console.log from your JS to grunt. False by default.
                     reporter: 'Spec',
-                    urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/index.html']
+                    urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/mocha.html']
                 }
             }
-        },<% } else if (testFramework === 'jasmine') { %>
+        },<% } if (jasmineTest) { %>
         jasmine: {
             all: {
                 options: {
-                    specs: '<%%= yeoman.app %>/test/spec/*Spec.js',
+                    specs: '<%%= yeoman.app %>/test/jasmine/spec/*Spec.js',
                     host: 'http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/',
                     template: require('grunt-template-jasmine-requirejs'),
                     templateOptions: {
@@ -174,6 +174,25 @@ module.exports = function (grunt) {
                         }
                     }
                 }
+            }
+        },<% } if (dalekTest) { %>
+        dalek: {
+            options: {
+                // invoke phantomjs, chrome & chrome canary
+                browser: ['phantomjs'],
+                // generate an console & an jUnit report
+                reporter: ['console', 'junit'],
+                // don't load config from an Dalekfile
+                dalekfile: false,
+                // specify advanced options (that else would be in your Dalekfile)
+                advanced: {
+                    // is not supported in dalekjs 0.0.8
+                    baseUrl: 'http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>'
+                }
+            },
+            dist: {
+                src: ['app/test/dalek/test-page.js']
+
             }
         },<% } %>
         
@@ -185,12 +204,12 @@ module.exports = function (grunt) {
                 baseUrl: '<%%= yeoman.app %>/bower_components',
                 exclude: [
                     'almond',
-                    'requirejs',
-                    'modernizr',<% if (testFramework === 'qunit') { %>
-                    'qunit'<% } else if (testFramework === 'mocha') { %>
+                    'requirejs',<% if (qunitTest) { %>
+                    'qunit',<% } if (mochaTest) { %>
                     'mocha',
-                    'chai'<% } else if (testFramework === 'jasmine') { %>
-                    'jasmine'<% } %>
+                    'chai',<% } if (jasmineTest) { %>
+                    'jasmine',<% } %>
+                    'modernizr'
                 ]
             },
             all: {
@@ -490,8 +509,12 @@ module.exports = function (grunt) {
                     port: 9999,
                     middleware: function (connect) {
                         return [
+                            lrSnippet,
+                            gateway(__dirname + path.sep + yeomanConfig.app, {
+                                '.php': 'php-cgi'
+                            }),
                             mountFolder(connect, '.tmp'),
-                            mountFolder(connect, yeomanConfig.app)<% if (testFramework === 'jasmine') { %>,
+                            mountFolder(connect, yeomanConfig.app)<% if (jasmineTest) { %>,
                             mountFolder(connect, '.')<% } %>
                         ];
                     }
@@ -544,19 +567,22 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test',  function () {
         grunt.task.run(['jshint:all']);
-<% if (testFramework === 'mocha' || testFramework === 'jasmine' || testFramework === 'qunit') { %>
+<% if (mochaTest || jasmineTest || qunitTest || dalekTest) { %>
         // testserver
         grunt.task.run(['clean:server', 'connect:test']);
 <% } %>
-<% if (testFramework === 'mocha') { %>
+<% if (mochaTest) { %>
         // mocha
         grunt.task.run(['mocha']);
-<% } else if (testFramework === 'jasmine') { %>
+<% } if (jasmineTest) { %>
         // jasmine
         grunt.task.run(['jasmine']);
-<% } else if (testFramework === 'qunit') { %>
+<% } if (qunitTest) { %>
         // qunit
         grunt.task.run(['qunit']);
+<% } if (dalekTest) { %>
+        // qunit
+        grunt.task.run(['dalek']);
 <% } %>
     });
 

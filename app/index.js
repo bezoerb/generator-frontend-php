@@ -179,13 +179,14 @@ FrontendGenerator.prototype.askFor = function askFor() {
 			]
 		},
 		{
-			type: 'list',
+			type: 'checkbox',
 			name: 'testChoice',
 			message: 'Which Test Framework would you like to use?',
 			choices: [
 				{
 					name: 'Mocha',
-					value: 'mocha'
+					value: 'mocha',
+					checked: true
 				},
 				{
 					name: 'Jasmine',
@@ -194,6 +195,10 @@ FrontendGenerator.prototype.askFor = function askFor() {
 				{
 					name: 'Qunit',
 					value: 'qunit'
+				},
+				{
+					name: 'DalekJS',
+					value: 'dalek'
 				}
 			]
 		}
@@ -217,12 +222,17 @@ FrontendGenerator.prototype.askFor = function askFor() {
 	}
 
 	this.prompt(prompts, function (props) {
+
 		// manually deal with the response, get back and store the results.
 		// we change a bit this way of doing to automatically do this in the self.prompt() method.
 		this.includeRequireJS = props.includeRequireJS;
 		this.frameworkSelected = getChoice(props, 'frameworkChoice', 'noframework');
 		this.preprocessorSelected = getChoice(props, 'preprocessorChoice', 'nopreprocessor');
-		this.testFramework = getChoice(props, 'testChoice', 'mocha');
+		this.mochaTest = this.jasmineTest = this.qunitTest = this.dalekTest = false;
+		for (var i in props.testChoice) {
+			this[props.testChoice[i] + 'Test'] = true;
+		}
+
 		this.layoutChoice = props.layoutChoice;
 		this.php2htmlChoice = props.php2htmlChoice;
 
@@ -367,7 +377,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'        app: \'../scripts/app\',',
 		'        component: \'../scripts/component\',',
 		'        library: \'../scripts/library\',',
-		'        jquery: \'jquery/jquery\',',
+		'        jquery: \'jquery/dist/jquery\',',
 		'        loglevel: \'loglevel/dist/loglevel.min\''+templateLibraryPath,
 		'    shim: {',
 		templateLibraryShim,
@@ -514,18 +524,25 @@ FrontendGenerator.prototype.addTests = function gruntfile() {
 	this.mkdir('app/test');
 
 	// jasmine testframework selected
-	if (this.testFramework === 'jasmine') {
-		this.directory('test/jasmine', 'app/test');
-
+	if (this.jasmineTest) {
+		this.directory('test/jasmine', 'app/test/jasmine');
+	}
+	
 	// qunit testframework selected
-	} else if (this.testFramework === 'qunit') {
-		this.directory('test/qunit', 'app/test');
-		this.copy('test/qunit.html', 'app/test/index.html');
+	if (this.qunitTest) {
+		this.directory('test/qunit', 'app/test/qunit');
+		this.copy('test/qunit.html', 'app/test/qunit.html');
+	} 
 
-	// mocha selected
-	} else if (this.testFramework === 'mocha') {
-		this.directory('test/mocha', 'app/test');
-		this.copy('test/mocha.html', 'app/test/index.html');
+	// mocha selected	
+	if (this.mochaTest) {
+		this.directory('test/mocha', 'app/test/mocha');
+		this.copy('test/mocha.html', 'app/test/mocha.html');
+	}
+
+	// dalek selected	
+	if (this.dalekTest) {
+		this.directory('test/dalek', 'app/test/dalek');
 	}
 };
 

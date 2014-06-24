@@ -55,7 +55,7 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
     };
 
 	/**
-     * Append files 
+     * Append files
      * overwrite to add special requirejs block because usemin does not support requirejs anymore
      *
      * @param {String|Object} htmlOrOptions
@@ -115,7 +115,7 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 	});
 
 	this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
-	
+
 	this.config.save();
 };
 
@@ -173,7 +173,7 @@ FrontendGenerator.prototype.askFor = function askFor() {
 					value: 'less'
 				},
 				{
-					name: 'Sass (requires Ruby and Compass)',
+					name: 'Sass',
 					value: 'sass'
 				}
 			]
@@ -268,7 +268,7 @@ FrontendGenerator.prototype.bower = function bower() {
 };
 
 FrontendGenerator.prototype.prettifyconfig = function editorConfig() {
-	
+
 };
 
 FrontendGenerator.prototype.h5bp = function h5bp() {
@@ -291,7 +291,7 @@ FrontendGenerator.prototype.mainStylesheet = function mainStylesheet() {
 	} else {
 		this.copy('main.css', 'app/styles/main.css');
 	}
-  
+
 };
 
 
@@ -455,7 +455,7 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 
 	// append styles
 	// with preprocessor sass bootstrap.scss or foundation.scss get included in main.scss file
-	// with preprocessor less bootstrap.less gets included 
+	// with preprocessor less bootstrap.less gets included
 	if(this.preprocessorSelected == 'sass' && this.frameworkSelected == 'foundation' ) {
 		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/main.css'
@@ -527,20 +527,20 @@ FrontendGenerator.prototype.addTests = function gruntfile() {
 	if (this.jasmineTest) {
 		this.directory('test/jasmine', 'app/test/jasmine');
 	}
-	
+
 	// qunit testframework selected
 	if (this.qunitTest) {
 		this.directory('test/qunit', 'app/test/qunit');
 		this.copy('test/qunit.html', 'app/test/qunit.html');
-	} 
+	}
 
-	// mocha selected	
+	// mocha selected
 	if (this.mochaTest) {
 		this.directory('test/mocha', 'app/test/mocha');
 		this.copy('test/mocha.html', 'app/test/mocha.html');
 	}
 
-	// dalek selected	
+	// dalek selected
 	if (this.dalekTest) {
 		this.directory('test/dalek', 'app/test/dalek');
 	}

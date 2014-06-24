@@ -49,9 +49,9 @@ module.exports = function (grunt) {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.less'],
                 tasks: ['less']
             },<% } else if (preprocessorSelected === 'sass') { %>
-            compass: {
+            sass: {
                 files: ['<%%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['compass:server']
+                tasks: ['sass']
             },<% } %>
             bower: {
                 files: ['<%%= yeoman.app %>/bower_components/**/*.js'],
@@ -70,29 +70,18 @@ module.exports = function (grunt) {
                 ]
             }
         },
-        
+
         /**
          * Compiling sources
          */
         <% if (preprocessorSelected === 'sass') { %>
-        compass: {
-            options: {
-                sassDir: '<%%= yeoman.app %>/styles',
-                cssDir: '.tmp/styles',
-                generatedImagesDir: '.tmp/images/generated',
-                imagesDir: '<%%= yeoman.app %>/images',
-                javascriptsDir: '<%%= yeoman.app %>/scripts',
-                /*fontsDir: '<%%= yeoman.app %>/styles/fonts',*/
-                importPath: '<%%= yeoman.app %>/bower_components',
-                httpImagesPath: '/images',
-                httpGeneratedImagesPath: '/images/generated',
-                httpFontsPath: '/styles/fonts',
-                relativeAssets: false
-            },
-            dist: {},
-            server: {
+        sass: {
+            landingpage: {
                 options: {
-                    debugInfo: true
+                    sourceMap: true
+                },
+                files: {
+                    '.tmp/styles/main.css': '<%%= yeoman.app %>/styles/main.scss'
                 }
             }
         },<% } else if (preprocessorSelected === 'less') { %>
@@ -107,7 +96,36 @@ module.exports = function (grunt) {
                 ]
             }
         },<% } %>
-
+        uncss: {
+            options: {
+                verbose:true,
+                ignore: [/* ignore css selectors for async content with complete selector or regexp */]
+            },
+            main: {
+                files: {
+                    '.tmp/uncss/styles/main.css': ['.tmp/index.html']
+                }
+            }
+        },
+        autoprefixer: {
+            dist: {
+                options: {
+                    // Target-specific options go here.
+                },
+                expand: true,
+                flatten: true,
+                src: '.tmp/uncss/styles/*.css',
+                dest: '.tmp/autoprefixer/styles/'
+            }
+        },
+        cssmin: {
+            dist: {
+                expand: true,
+                cwd: '.tmp/autoprefixer/styles/',
+                src: ['*.css'],
+                dest: '<%%= yeoman.dist %>/styles/'
+            }
+        },
         php2html: {
             all: {
                 options: {
@@ -122,7 +140,7 @@ module.exports = function (grunt) {
             }
         },
 
-        
+
 
         /**
          * Testing Tools
@@ -195,7 +213,7 @@ module.exports = function (grunt) {
 
             }
         },<% } %>
-        
+
         /**
          * Scripts
          */
@@ -285,7 +303,7 @@ module.exports = function (grunt) {
                 'customTests': []
             }
         },
-        
+
         /**
          * Performance optimization
          */
@@ -339,25 +357,6 @@ module.exports = function (grunt) {
                 }]
             }
         },
-        cssmin: {
-            dist: {
-                expand: true,
-                cwd: '.tmp/uncss/styles/',
-                src: ['*.css'],
-                dest: '<%%= yeoman.dist %>/styles/'
-            }
-        },
-        uncss: {
-            options: {
-                verbose:true,
-                ignore: [/* ignore css selectors for async content with complete selector or regexp */]
-            },
-            main: {
-                files: {
-                    '.tmp/uncss/styles/main.css': ['.tmp/index.html']
-                }
-            }
-        },
         htmlmin: {
             dist: {
                 options: {
@@ -388,7 +387,7 @@ module.exports = function (grunt) {
                 dest: '<%%= yeoman.dist %>'
             }
         },
-        
+
         /**
          * File based Cache busting
          */
@@ -404,7 +403,7 @@ module.exports = function (grunt) {
                 }
             }
         },
-        
+
         /**
          * Copy && Concurrent
          */
@@ -456,21 +455,21 @@ module.exports = function (grunt) {
         },
         concurrent: {
             server: [<% if (preprocessorSelected === 'sass') { %>
-                'compass:server'<% } else if (preprocessorSelected === 'less') { %>
+                'sass'<% } else if (preprocessorSelected === 'less') { %>
                 'less'<% } %>
             ],
             test: [<% if (preprocessorSelected === 'sass') { %>
-                'compass'<% } else if (preprocessorSelected === 'less') { %>
+                'sass'<% } else if (preprocessorSelected === 'less') { %>
                 'less'<% } %>
             ],
             dist: [<% if (preprocessorSelected === 'sass') { %>
-                'compass:dist',<% } else if (preprocessorSelected === 'less') { %>
+                'sass',<% } else if (preprocessorSelected === 'less') { %>
                 'less',<% } %>
                 'imagemin',
                 'svgmin'
             ]
         },
-        
+
         /**
          * Server
          */
@@ -534,7 +533,7 @@ module.exports = function (grunt) {
                 }
             }
         },
-        
+
         /**
          * Documentation
          */
@@ -597,6 +596,7 @@ module.exports = function (grunt) {
         'useminPrepare',
         'concurrent:dist',
         'uncss',
+        'autoprefixer',
         'concat',
         'requirejs',
         'modernizr',
@@ -616,5 +616,3 @@ module.exports = function (grunt) {
         'server'
     ]);
 };
-
-

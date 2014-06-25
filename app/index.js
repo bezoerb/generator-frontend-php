@@ -554,7 +554,10 @@ FrontendGenerator.prototype.app = function app() {
 	this.copy('scripts/dummy.js','app/scripts/component/dummy.js');
 	this.mkdir('app/scripts/library');
 	this.copy('scripts/polyfills.js','app/scripts/library/polyfills.js');
-	this.mkdir('app/styles');
+	if (this.preprocessorSelected === 'less' && this.frameworkSelected === 'bootstrap') {
+		this.copy('less/bootstrap.less','app/styles/bootstrap.less');
+		this.copy('less/variables.less','app/styles/variables.less');
+	}
 	this.mkdir('app/images');
 	this.write('app/index.php', this.indexFile);
 	this.write('app/includes/header.php', this.headerFile);

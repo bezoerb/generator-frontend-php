@@ -107,7 +107,7 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 	};
 
 	this.indexFile = this.readFileAsString(path.join(this.sourceRoot(), 'index.html'));
-	this.headerFile = this.readFileAsString(path.join(this.sourceRoot(),'includes', 'header.php'));
+	this.headerFile = this.readFileAsString(path.join(this.sourceRoot(),'includes', 'head.php'));
 	this.footerFile = this.readFileAsString(path.join(this.sourceRoot(),'includes', 'footer.php'));
 	this.mainJsFile = '';
 
@@ -576,7 +576,7 @@ FrontendGenerator.prototype.app = function app() {
 
 	this.mkdir('app/images');
 	this.write('app/index.php', this.indexFile);
-	this.write('app/includes/header.php', this.headerFile);
+	this.write('app/includes/head.php', this.headerFile);
 	this.write('app/includes/footer.php', this.footerFile);
 	this.write('app/scripts/main.js', this.mainJsFile);
 };

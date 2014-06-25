@@ -99,7 +99,7 @@ module.exports = function (grunt) {
         uncss: {
             options: {
                 verbose:true,
-                ignore: [/* ignore css selectors for async content with complete selector or regexp */]
+                ignore: [/dropdown-menu/] // ignore css selectors for async content with complete selector or regexp
             },
             main: {
                 files: {
@@ -441,7 +441,14 @@ module.exports = function (grunt) {
                     src: [
                         '{,*/}*.css'
                     ]
-                }]
+                }<% if (frameworkSelected === 'bootstrap') { %>, {
+                    expand: true,
+                    cwd: '<%%= yeoman.app %>/fonts',
+                    dest: '<%%= yeoman.dist %>/fonts',
+                    src: [
+                        '*.*'
+                    ]
+                }<% } %>]
             },
             prepare: {
                 expand: true,

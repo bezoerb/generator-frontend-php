@@ -21,8 +21,9 @@
     "test": "mocha"
   },
   "dependencies": {
-    "yeoman-generator": "~0.16.0",
-    "cheerio": "~0.15.0"
+    "cheerio": "~0.15.0",
+    "fs.extra": "^1.2.1",
+    "yeoman-generator": "~0.16.0"
   },
   "devDependencies": {
     "mocha": "~1.18.2"

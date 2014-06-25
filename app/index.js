@@ -1,5 +1,6 @@
 'use strict';
 var util = require('util');
+var fs = require('fs.extra');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var cheerio = require('cheerio');
@@ -110,8 +111,19 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 	this.footerFile = this.readFileAsString(path.join(this.sourceRoot(),'includes', 'footer.php'));
 	this.mainJsFile = '';
 
+	this.skipInstall = options['skip-install'];
+
+
 	this.on('end', function () {
-		this.installDependencies({ skipInstall: options['skip-install'] });
+		this.installDependencies({ skipInstall: options['skip-install'], callback: function(){
+            // if using bootstrap, copy icon fonts from bower directory to app
+            if (this.frameworkSelected === 'bootstrap' && !this.skipInstall) {
+                var src = path.join(this.destinationRoot(),'app/bower_components/bootstrap/fonts'),
+                    dest = path.join(this.destinationRoot(),'app/fonts');
+
+                fs.copyRecursive(src,dest, function(){});
+            }
+		}.bind(this)});
 	});
 
 	this.pkg = JSON.parse(this.readFileAsString(path.join(__dirname, '../package.json')));
@@ -554,10 +566,14 @@ FrontendGenerator.prototype.app = function app() {
 	this.copy('scripts/dummy.js','app/scripts/component/dummy.js');
 	this.mkdir('app/scripts/library');
 	this.copy('scripts/polyfills.js','app/scripts/library/polyfills.js');
+
+	// bootstrap variable tweaking
 	if (this.preprocessorSelected === 'less' && this.frameworkSelected === 'bootstrap') {
 		this.copy('less/bootstrap.less','app/styles/bootstrap.less');
 		this.copy('less/variables.less','app/styles/variables.less');
 	}
+
+
 	this.mkdir('app/images');
 	this.write('app/index.php', this.indexFile);
 	this.write('app/includes/header.php', this.headerFile);

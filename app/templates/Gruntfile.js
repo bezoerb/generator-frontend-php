@@ -76,7 +76,7 @@ module.exports = function (grunt) {
          */
         <% if (preprocessorSelected === 'sass') { %>
         sass: {
-            landingpage: {
+            all: {
                 options: {
                     sourceMap: true
                 },
@@ -549,6 +549,18 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('server', function (target) {
+        grunt.log.warn('This task is deprecated. Use `grunt serve` instead.');
+
+        if (target === 'dist') {
+            grunt.task.run(['serve:dist']);
+        } else {
+            grunt.task.run(['serve']);
+        }
+
+    });
+
+
+    grunt.registerTask('serve', function(target) {
         if (target === 'dist') {
             return grunt.task.run(['build', 'open:dist', 'connect:dist:keepalive']);
         }

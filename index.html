@@ -1,0 +1,132 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Generator-frontend-php by bezoerb</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/bezoerb/generator-frontend-php">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/bezoerb/generator-frontend-php/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/bezoerb/generator-frontend-php/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Generator-frontend-php</h1>
+          <p>Frontend generator supporting RequireJS, different test and css frameworks and PHP</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/bezoerb">bezoerb</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="generator-frontend-php-" class="anchor" href="#generator-frontend-php-"><span class="octicon octicon-link"></span></a>generator-frontend-php <a href="https://travis-ci.org/bezoerb/generator-frontend-php"><img src="https://secure.travis-ci.org/bezoerb/generator-frontend-php.png?branch=master" alt="Build Status"></a>
+</h1>
+
+<p>A generator for <a href="http://yeoman.io">Yeoman</a>.</p>
+
+<h2>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<h3>
+<a name="what-is-yeoman" class="anchor" href="#what-is-yeoman"><span class="octicon octicon-link"></span></a>What is Yeoman?</h3>
+
+<p>Trick question. It's not a thing. It's this guy:</p>
+
+<p><img src="http://i.imgur.com/JHaAlBJ.png" alt=""></p>
+
+<p>Basically, he wears a top hat, lives in your computer, and waits for you to tell him what kind of application you wish to create.</p>
+
+<p>Not every new computer comes with a Yeoman pre-installed. He lives in the <a href="https://npmjs.org">npm</a> package repository. You only have to ask for him once, then he packs up and moves into your hard drive. <em>Make sure you clean up, he likes new and shiny things.</em></p>
+
+<pre><code>$ npm install -g yo
+</code></pre>
+
+<h3>
+<a name="php-frontend-generator" class="anchor" href="#php-frontend-generator"><span class="octicon octicon-link"></span></a>PHP Frontend Generator</h3>
+
+<p>Generate static html files using php with the power of that nice gentleman.</p>
+
+<ul>
+<li>Local Connect web-server</li>
+<li>Live reloading</li>
+<li>HTML5 Boilerplate</li>
+<li>Integration of PureCSS, Bootstrap or Foundation</li>
+<li>Compiling PHP templates to HTML</li>
+<li>Compiling Sass and Less</li>
+<li>RequireJS</li>
+<li>JS testing with Mocha, Qunit, Jasmine or DalekJS</li>
+<li>Plato Reports</li>
+<li>CSS and JS minification</li>
+<li>Strip unused CSS with grunt-uncss</li>
+<li>Image optimization</li>
+<li>HTML and JS linting</li>
+<li>Custom Modernizr build</li>
+</ul><p>To install generator-frontend-php from npm, run:</p>
+
+<pre><code>$ npm install -g generator-frontend-php
+</code></pre>
+
+<p>To make this work you need the <code>php-cgi</code> binaray in your PATH.</p>
+
+<p>Finally, initiate the generator:</p>
+
+<pre><code>$ yo frontend-php
+</code></pre>
+
+<h3>
+<a name="installing-php-cgi" class="anchor" href="#installing-php-cgi"><span class="octicon octicon-link"></span></a>Installing php-cgi</h3>
+
+<h5>
+<a name="osx" class="anchor" href="#osx"><span class="octicon octicon-link"></span></a>OSX</h5>
+
+<p>The <code>php-cgi</code> binary can be installed via Homebrew by tapping the
+<a href="https://github.com/josegonzalez/homebrew-php">homebrew-php</a> repository:</p>
+
+<pre lang="shell"><code>brew tap homebrew/dupes
+brew tap josegonzalez/homebrew-php
+brew install php54
+</code></pre>
+
+<h5>
+<a name="windows" class="anchor" href="#windows"><span class="octicon octicon-link"></span></a>Windows</h5>
+
+<p>The <code>php-cgi</code> binary can be installed via <a href="http://www.apachefriends.org/de/xampp-windows.html">XAMPP</a>. 
+Here is how you can add the binary to your PATH: <a href="https://www.monosnap.com/image/psLZ5fpwuSsvJJeZPdklEjxMr">Link</a></p>
+
+<h5>
+<a name="ubuntu" class="anchor" href="#ubuntu"><span class="octicon octicon-link"></span></a>Ubuntu</h5>
+
+<pre lang="shell"><code>sudo apt-get install php5-cgi
+</code></pre>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p><a href="bezoerb.mit-license.org">MIT License</a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

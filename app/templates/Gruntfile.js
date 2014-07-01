@@ -325,7 +325,7 @@ module.exports = function (grunt) {
                     }
                 }
             },<% if (php2htmlChoice === true) { %>
-            html: ['.tmp/**/*.html', '!bower_components/**/*.html']<% } else { %>
+            html: ['.tmp/**/*.html', '!.tmp/includes/**/*.html', '!bower_components/**/*.html']<% } else { %>
             html: ['.tmp/**/*.php', '!bower_components/**/*.php']<% } %>
         },
         usemin: {

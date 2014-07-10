@@ -205,7 +205,7 @@ module.exports = function (grunt) {
                 // specify advanced options (that else would be in your Dalekfile)
                 advanced: {
                     // is not supported in dalekjs 0.0.8
-                    baseUrl: 'http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>'
+                    baseUrl: 'http://<%%= connect.testPhp.options.hostname %>:<%%= connect.testPhp.options.port %>'
                 }
             },
             dist: {
@@ -515,6 +515,20 @@ module.exports = function (grunt) {
                     port: 9999,
                     middleware: function (connect) {
                         return [
+                            mountFolder(connect, '.tmp'),
+                            mountFolder(connect, yeomanConfig.app)<% if (jasmineTest) { %>,
+                            mountFolder(connect, '.')<% } %>
+                        ];
+                    }
+                }
+            },<% if (dalekTest) { %>
+            // mocha has problems with gateway, so keep this one separate
+            testPhp: {
+                options: {
+                    hostname: '127.0.0.1',
+                    port: 9998,
+                    middleware: function (connect) {
+                        return [
                             lrSnippet,
                             gateway(__dirname + path.sep + yeomanConfig.app, {
                                 '.php': 'php-cgi'
@@ -525,8 +539,7 @@ module.exports = function (grunt) {
                         ];
                     }
                 }
-            },
-
+            },<% } %>
             dist: {
                 options: {
                     middleware: function (connect) {
@@ -599,7 +612,9 @@ module.exports = function (grunt) {
         // qunit
         grunt.task.run(['qunit']);
 <% } if (dalekTest) { %>
-        // qunit
+        // testserver php
+        grunt.task.run(['clean:server', 'connect:testPhp']);
+        // dalekjs
         grunt.task.run(['dalek']);
 <% } %>
     });

@@ -135,7 +135,7 @@ module.exports = function (grunt) {
                     docroot: '<%%= yeoman.app %>'
                 },
                 files: [
-                    {expand: true, cwd: yeomanConfig.app, src: ['**/*.php','!bower_components/**/*.php'], dest: '.tmp', ext: '.html' }
+                    {expand: true, cwd: yeomanConfig.app, src: ['**/*.php','!includes/**/*.php','!bower_components/**/*.php'], dest: '.tmp', ext: '.html' }
                 ]
             }
         },

@@ -20,13 +20,13 @@
     	"grunt-contrib-requirejs": "~0.4.1",
 		"grunt-contrib-imagemin": "~0.7.0",
 		"grunt-contrib-watch": "~0.6.1",<% if (jasmineTest) { %>
-    	"grunt-contrib-jasmine": "~0.6.5",
-    	"grunt-template-jasmine-requirejs": "~0.2.0",<% } %>
+    	"grunt-contrib-jasmine": "~0.5.3",
+    	"grunt-template-jasmine-requirejs": "~0.1.7",<% } %>
 		"grunt-rev": "~0.1.0",
 		"grunt-usemin": "~2.3.0",<% if (mochaTest) {  %>
     	"grunt-mocha": "~0.4.1",<% } %>
 		"grunt-open": "~0.2.2",<% if (qunitTest) {  %>
-    	"grunt-contrib-qunit": "~0.5.1",<% } %><% if (dalekTest) {  %>
+    	"grunt-contrib-qunit": "~0.4.0",<% } %><% if (dalekTest) {  %>
     	"grunt-dalek": "^0.2.0",<% } %>
 		"grunt-svgmin": "~0.4.0",
 		"grunt-concurrent": "~0.5.0",
@@ -35,7 +35,7 @@
 		"connect-livereload": "~0.4.0",
 		"time-grunt": "~0.3.1",
 		"gateway": "~0.2.1",
-		"grunt-php2html": "~0.1.12",
+		"grunt-php2html": "~0.1.13",
 		"load-grunt-tasks": "~0.6.0",
 		"grunt-plato": "~1.0.0",
 		"grunt-modernizr": "~0.5.1",

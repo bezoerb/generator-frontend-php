@@ -99,7 +99,7 @@ module.exports = function (grunt) {
         uncss: {
             options: {
                 verbose:true,
-                ignore: [/dropdown-menu/] // ignore css selectors for async content with complete selector or regexp
+                ignore: [/dropdown-menu/,/\.collapsing/,/\.collapse/] // ignore css selectors for async content with complete selector or regexp
             },
             main: {
                 files: {
@@ -121,7 +121,7 @@ module.exports = function (grunt) {
         cssmin: {
             dist: {
                 expand: true,
-                cwd: '.tmp/autoprefixer/styles/',
+                cwd: '<%%= autoprefixer.dist.dest %>',
                 src: ['*.css'],
                 dest: '<%%= yeoman.dist %>/styles/'
             }
@@ -293,7 +293,7 @@ module.exports = function (grunt) {
 
                 // When parseFiles = true, this task will crawl all *.js, *.css, *.scss files, except files that are in node_modules/.
                 // You can override this by defining a 'files' array below.
-                'files': {src: ['/scripts/**/*.js', '.tmp/uncss/**/*.css'] },
+                'files': {src: ['<%%= requirejs.all.options.out %>', '.tmp/uncss/**/*.css'] },
 
                 // When parseFiles = true, matchCommunityTests = true will attempt to
                 // match user-contributed tests.

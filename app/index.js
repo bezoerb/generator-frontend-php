@@ -118,7 +118,8 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 		this.installDependencies({ skipInstall: options['skip-install'], callback: function(){
             // if using bootstrap, copy icon fonts from bower directory to app
             if (this.frameworkSelected === 'bootstrap' && !this.skipInstall) {
-                var src = path.join(this.destinationRoot(),'app/bower_components/bootstrap/fonts'),
+								var pkg = this.preprocessorSelected === 'sass' ? 'sass-bootstrap' : 'bootstrap',
+                 		src = path.join(this.destinationRoot(),'app/bower_components/'+pkg+'/fonts'),
                     dest = path.join(this.destinationRoot(),'app/fonts');
 
                 fs.copyRecursive(src,dest, function(){});
@@ -191,9 +192,25 @@ FrontendGenerator.prototype.askFor = function askFor() {
 			]
 		},
 		{
+			type: 'list',
+			name: 'loaderChoice',
+			message: 'Which module loader would you like to use?',
+			choices: [
+				{
+					name: 'RequireJS',
+					value: 'requirejs',
+					checked: true
+				},
+				{
+					name: 'Browserify',
+					value: 'browserify'
+				}
+			]
+		},
+		{
 			type: 'checkbox',
 			name: 'testChoice',
-			message: 'Which Test Framework would you like to use?',
+			message: 'Which test framework would you like to use?',
 			choices: [
 				{
 					name: 'Mocha',
@@ -237,7 +254,7 @@ FrontendGenerator.prototype.askFor = function askFor() {
 
 		// manually deal with the response, get back and store the results.
 		// we change a bit this way of doing to automatically do this in the self.prompt() method.
-		this.includeRequireJS = props.includeRequireJS;
+		this.moduleLoader = getChoice(props,'loaderChoice','requirejs');
 		this.frameworkSelected = getChoice(props, 'frameworkChoice', 'noframework');
 		this.preprocessorSelected = getChoice(props, 'preprocessorChoice', 'nopreprocessor');
 		this.mochaTest = this.jasmineTest = this.qunitTest = this.dalekTest = false;
@@ -329,8 +346,20 @@ FrontendGenerator.prototype.addLayout = function gruntfile() {
   this.indexFile = this.indexFile.replace("<!--your page logic-->", layoutStr);
 };
 
+FrontendGenerator.prototype.browserify = function browserify() {
+	if (this.moduleLoader !== 'browserify') {
+		return;
+	}
+	this.copy('scripts/'+this.moduleLoader+'/app.'+this.frameworkSelected+'.js','app/scripts/app.js');
+	this.footerFile = this.appendFiles(this.footerFile, 'js','scripts/main.js', ['scripts/main.js'], {
+		'data-main': 'main'
+	});
+}
 
 FrontendGenerator.prototype.requirejs = function requirejs() {
+	if (this.moduleLoader !== 'requirejs') {
+		return;
+	}
 	var requiredScripts = ['app', 'jquery'];
 	var inlineRequire = '';
 	var logCmd = '';
@@ -563,9 +592,9 @@ FrontendGenerator.prototype.app = function app() {
 	this.mkdir('app');
 	this.mkdir('app/scripts');
 	this.mkdir('app/scripts/component');
-	this.copy('scripts/dummy.js','app/scripts/component/dummy.js');
+	this.copy('scripts/'+this.moduleLoader+'/dummy.js','app/scripts/component/dummy.js');
 	this.mkdir('app/scripts/library');
-	this.copy('scripts/polyfills.js','app/scripts/library/polyfills.js');
+	this.copy('scripts/'+this.moduleLoader+'/polyfills.js','app/scripts/library/polyfills.js');
 
 	// bootstrap variable tweaking
 	if (this.preprocessorSelected === 'less' && this.frameworkSelected === 'bootstrap') {

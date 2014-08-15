@@ -216,7 +216,7 @@ module.exports = function (grunt) {
 
         /**
          * Scripts
-         */
+         */<% if (moduleLoader === 'requirejs') { %>
         bower: {
             options: {
                 baseUrl: '<%%= yeoman.app %>/bower_components',
@@ -251,7 +251,38 @@ module.exports = function (grunt) {
                     useSourceUrl            : true
                 }
             }
+        },<% } else if (moduleLoader === 'browserify') { %>
+        browserify: {
+            options: {
+              bundleOptions: {
+                  standalone: 'main'
+              },
+              transform: ['debowerify', 'deglobalify', 'deamdify']
+            },
+            dist: {
+                src: '<%%= yeoman.app %>/scripts/app.js',
+                dest: '.tmp/browserify/main.js'
+            },
+            dev: {
+                src: '<%%= yeoman.app %>/scripts/app.js',
+                dest: '.tmp/scripts/main.js',
+                options: {
+                    watch: true,
+                    bundleOptions: {
+                        standalone: 'main',
+                        debug: true
+                    }
+                }
+            }
         },
+
+        uglify: {
+            dist: {
+                files: {
+                    '<%%= yeoman.dist %>/scripts/main.js': ['<%%= browserify.dist.dest %>']
+                }
+            }
+        },<% } %>
         modernizr: {
             dist: {
                 // [REQUIRED] Path to the build you're using for development.
@@ -588,7 +619,8 @@ module.exports = function (grunt) {
         grunt.task.run([
             'clean:server',
             'concurrent:server',
-            'connect:livereload',
+            'connect:livereload',<% if (moduleLoader === 'browserify') { %>
+            'browserify:dev',<% } %>
             'open:app',
             'watch'
         ]);
@@ -621,9 +653,9 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('build', [
-        'clean:dist',
-        'bower',
-		'test',
+        'clean:dist',<% if (moduleLoader === 'requirejs') { %>
+        'bower',<% } %>
+		    'test',
         'php2html',
         'copy:prepare',
         'processhtml',
@@ -631,8 +663,10 @@ module.exports = function (grunt) {
         'concurrent:dist',
         'uncss',
         'autoprefixer',
-        'concat',
-        'requirejs',
+        'concat',<% if (moduleLoader === 'requirejs') { %>
+        'requirejs',<% } else if (moduleLoader === 'browserify') { %>
+        'browserify:dist',
+        'uglify:dist',<% } %>
         'modernizr',
         'uglify',
         'copy:dist',
@@ -644,8 +678,8 @@ module.exports = function (grunt) {
         'htmlmin'<% } %>
     ]);
 
-    grunt.registerTask('default', [
-        'bower',
+    grunt.registerTask('default', [<% if (moduleLoader === 'requirejs') { %>
+        'bower',<% } %>
         'test',
         'server'
     ]);

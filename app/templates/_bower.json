@@ -2,7 +2,7 @@
   "name": "<%= _.slugify(appname) %>",
   "version": "0.0.0",
   "dependencies": {<% if (frameworkSelected == 'bootstrap' && preprocessorSelected == 'sass') { %>
-    "sass-bootstrap": "*",<% } %><% if (frameworkSelected == 'bootstrap') { %>
+    "sass-bootstrap": "*",<% } else if (frameworkSelected == 'bootstrap') { %>
     "bootstrap": "*",<% } else if (frameworkSelected == 'foundation') { %>
     "foundation": "*",<% } %><% if (frameworkSelected == 'foundation' && preprocessorSelected != 'sass') { %>
     "bower-foundation-css": "*",<% } %><% if (frameworkSelected == 'pure') { %>

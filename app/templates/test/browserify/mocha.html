@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Basic Test Suite</title>
+        <!-- Load local QUnit. -->
+        <link rel="stylesheet" href="../bower_components/mocha/mocha.css" media="screen">
+    </head>
+    <body>
+        <div id="mocha"></div>
+
+        <!-- mocha -->
+        <script src="../bower_components/mocha/mocha.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            // This will be overridden by mocha-helper if you run with grunt
+            mocha.setup('bdd');
+        </script>
+
+        <!-- assertion framework -->
+        <script src="../bower_components/chai/chai.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            // Setup chai
+            var expect = chai.expect;
+        </script>
+
+        <!-- Spec files -->
+        <script src="./mocha/specs-build.js"></script>
+
+        <!-- run mocha -->
+        <script type="text/javascript" charset="utf-8">
+            // If tests run in a real browser
+            // Can alternatively do a check on window.PHANTOMJS
+            if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+                mocha.run();
+            }
+        </script>
+
+    </body>
+</html>

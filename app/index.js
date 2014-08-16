@@ -566,24 +566,24 @@ FrontendGenerator.prototype.addTests = function gruntfile() {
 
 	// jasmine testframework selected
 	if (this.jasmineTest) {
-		this.directory('test/jasmine', 'app/test/jasmine');
+		this.directory('test/'+this.moduleLoader+'/jasmine', 'app/test/jasmine');
 	}
 
 	// qunit testframework selected
 	if (this.qunitTest) {
-		this.directory('test/qunit', 'app/test/qunit');
-		this.copy('test/qunit.html', 'app/test/qunit.html');
+		this.directory('test/'+this.moduleLoader+'/qunit', 'app/test/qunit');
+		this.copy('test/'+this.moduleLoader+'/qunit.html', 'app/test/qunit.html');
 	}
 
 	// mocha selected
 	if (this.mochaTest) {
-		this.directory('test/mocha', 'app/test/mocha');
-		this.copy('test/mocha.html', 'app/test/mocha.html');
+		this.directory('test/'+this.moduleLoader+'/mocha', 'app/test/mocha');
+		this.copy('test/'+this.moduleLoader+'/mocha.html', 'app/test/mocha.html');
 	}
 
 	// dalek selected
 	if (this.dalekTest) {
-		this.directory('test/dalek', 'app/test/dalek');
+		this.directory('test/'+this.moduleLoader+'/dalek', 'app/test/dalek');
 	}
 };
 

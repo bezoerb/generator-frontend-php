@@ -3,7 +3,8 @@
 var LIVERELOAD_PORT = 35729,
     lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT}),
     gateway = require('gateway'),
-    path = require('path'),
+    path = require('path'),<% if (moduleLoader === 'browserify') { %>
+    remapify = require('remapify'),<% } %>
     mountFolder = function (connect, dir) {
         return connect.static(require('path').resolve(dir));
     };
@@ -38,7 +39,17 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
-            server: '.tmp'
+            server: '.tmp'<% if (moduleLoader === 'browserify') { %>,
+            test: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '.tmp',
+                        '<%%= yeoman.app %>/test/**/*-build.js'
+                    ]
+                }]
+            }
+            <% } %>
         },
         watch: {
             javascript: {
@@ -166,7 +177,7 @@ module.exports = function (grunt) {
                     urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/qunit.html']
                 }
             }
-        },<% } if (mochaTest) { %>
+        },<% } if (mochaTest && moduleLoader === 'requirejs') { %>
         mocha: {
             all: {
                 options: {
@@ -178,7 +189,24 @@ module.exports = function (grunt) {
                     urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/mocha.html']
                 }
             }
-        },<% } if (jasmineTest) { %>
+        },<% } else if (mochaTest && moduleLoader === 'browserify') { %>
+        mocha: {
+            all: {
+                options: {
+                    reporter: 'Spec',
+                    // URLs passed through as options
+                    urls: ['http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/test/mocha.html'],
+                    // Indicates whether 'mocha.run()' should be executed in
+                    // 'bridge.js'
+                    run: true,
+                    log: true,
+                    // mocha options
+                    mocha: {
+                        ignoreLeaks: false
+                    }
+                }
+            }
+        },<% } if (jasmineTest && moduleLoader === 'requirejs') { %>
         jasmine: {
             all: {
                 options: {
@@ -193,6 +221,14 @@ module.exports = function (grunt) {
                     }
                 }
             }
+        },<% } else if (jasmineTest && moduleLoader === 'browserify') { %>
+        jasmine: {
+            all: {
+                options: {
+                    specs: '<%%= yeoman.app %>/test/jasmine/specs-build.js',
+                    host: 'http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>/'
+                }
+            }
         },<% } if (dalekTest) { %>
         dalek: {
             options: {
@@ -205,7 +241,8 @@ module.exports = function (grunt) {
                 // specify advanced options (that else would be in your Dalekfile)
                 advanced: {
                     // is not supported in dalekjs 0.0.8
-                    baseUrl: 'http://<%%= connect.testPhp.options.hostname %>:<%%= connect.testPhp.options.port %>'
+                    <% if (moduleLoader === 'requirejs') { %>baseUrl: 'http://<%%= connect.testPhp.options.hostname %>:<%%= connect.testPhp.options.port %>'
+                    <% } else if (moduleLoader === 'browserify') { %>baseUrl: 'http://<%%= connect.test.options.hostname %>:<%%= connect.testPhp.options.port %>'<% } %>
                 }
             },
             dist: {
@@ -254,10 +291,24 @@ module.exports = function (grunt) {
         },<% } else if (moduleLoader === 'browserify') { %>
         browserify: {
             options: {
-              bundleOptions: {
-                  standalone: 'main'
-              },
-              transform: ['debowerify', 'deglobalify', 'deamdify']
+                bundleOptions: {
+                    standalone: 'main'
+                },
+                preBundleCB: function (b) {
+                    b.plugin(remapify, [
+                        {
+                            src: './**/*.js',
+                            expose: 'component',
+                            cwd: __dirname + '/' + yeomanConfig.app + '/scripts/component'
+                        },
+                        {
+                            src: './**/*.js',
+                            expose: 'library',
+                            cwd: __dirname + '/' + yeomanConfig.app + '/scripts/library'
+                        }
+                    ]);
+                },
+                transform: ['debowerify', 'deglobalify', 'deamdify']
             },
             dist: {
                 src: '<%%= yeoman.app %>/scripts/app.js',
@@ -273,7 +324,19 @@ module.exports = function (grunt) {
                         debug: true
                     }
                 }
-            }
+            }<% if (jasmineTest) { %>,
+            jasmine: {
+                src: '<%%= yeoman.app %>/test/jasmine/specs.js',
+                dest: '<%%= yeoman.app %>/test/jasmine/specs-build.js'
+            }<% } %><% if (qunitTest) { %>,
+            qunit: {
+                src: '<%%= yeoman.app %>/test/qunit/specs.js',
+                dest: '<%%= yeoman.app %>/test/qunit/specs-build.js'
+            }<% } %><% if (mochaTest) { %>,
+            mocha: {
+                src: '<%%= yeoman.app %>/test/mocha/specs.js',
+                dest: '<%%= yeoman.app %>/test/mocha/specs-build.js'
+            }<% } %>
         },
 
         uglify: {
@@ -545,14 +608,18 @@ module.exports = function (grunt) {
                     hostname: '127.0.0.1',
                     port: 9999,
                     middleware: function (connect) {
-                        return [
+                        return [<% if (moduleLoader === 'browserify') { %>
+                            lrSnippet,
+                            gateway(__dirname + path.sep + yeomanConfig.app, {
+                                '.php': 'php-cgi'
+                            }),<% } %>
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, yeomanConfig.app)<% if (jasmineTest) { %>,
                             mountFolder(connect, '.')<% } %>
                         ];
                     }
                 }
-            },<% if (dalekTest) { %>
+            },<% if (dalekTest && moduleLoader === 'requirejs') { %>
             // mocha has problems with gateway, so keep this one separate
             testPhp: {
                 options: {
@@ -627,12 +694,13 @@ module.exports = function (grunt) {
     });
 
 
-
+<% if (moduleLoader === 'requirejs') { %>
     grunt.registerTask('test',  function () {
         grunt.task.run(['jshint:all']);
 <% if (mochaTest || jasmineTest || qunitTest || dalekTest) { %>
         // testserver
         grunt.task.run(['clean:server', 'connect:test']);
+
 <% } %>
 <% if (mochaTest) { %>
         // mocha
@@ -650,7 +718,31 @@ module.exports = function (grunt) {
         grunt.task.run(['dalek']);
 <% } %>
     });
+<% } else if (moduleLoader === 'browserify') { %>
+    grunt.registerTask('test',  function () {
+        grunt.task.run(['jshint:all']);
+<% if (mochaTest || jasmineTest || qunitTest || dalekTest) { %>
+        // testserver
+        grunt.task.run(['connect:test']);
+<% } %>
+<% if (mochaTest) { %>
+        // mocha
+        grunt.task.run(['browserify:mocha','mocha']);
+<% } if (jasmineTest) { %>
+        // jasmine
+        grunt.task.run(['browserify:jasmine','jasmine']);
+<% } if (qunitTest) { %>
+        // qunit
+        grunt.task.run(['browserify:qunit','qunit']);
+<% } if (dalekTest) { %>
+        // dalekjs
+        grunt.task.run(['dalek']);
+<% } if (mochaTest || jasmineTest || qunitTest || dalekTest) { %>
 
+        grunt.task.run(['clean:test']);
+<% } %>
+    });
+<% } %>
 
     grunt.registerTask('build', [
         'clean:dist',<% if (moduleLoader === 'requirejs') { %>

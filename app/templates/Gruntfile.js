@@ -242,7 +242,7 @@ module.exports = function (grunt) {
                 advanced: {
                     // is not supported in dalekjs 0.0.8
                     <% if (moduleLoader === 'requirejs') { %>baseUrl: 'http://<%%= connect.testPhp.options.hostname %>:<%%= connect.testPhp.options.port %>'
-                    <% } else if (moduleLoader === 'browserify') { %>baseUrl: 'http://<%%= connect.test.options.hostname %>:<%%= connect.testPhp.options.port %>'<% } %>
+                    <% } else if (moduleLoader === 'browserify') { %>baseUrl: 'http://<%%= connect.test.options.hostname %>:<%%= connect.test.options.port %>'<% } %>
                 }
             },
             dist: {

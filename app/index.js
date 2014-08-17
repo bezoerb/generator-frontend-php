@@ -88,12 +88,17 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
             });
             blocks = this.generateRequireBlock('js', optimizedPath, files, searchPath);
             updatedContent = this.append(html, '', blocks);
-        } else if (fileType === 'js') {
+        } else if (fileType === 'js' && optimizedPath) {
 			sourceFileList.forEach(function (el) {
 				files += '<script ' + attrs + ' src="' + el + '"></script>\n';
 			});
 			blocks = this.generateBlock(fileType, optimizedPath, files, searchPath);
 			updatedContent = this.append(html, '', blocks);
+		} else if (fileType === 'js' && !optimizedPath) {
+		sourceFileList.forEach(function (el) {
+			files += '<script ' + attrs + ' src="' + el + '"></script>\n';
+		});
+		updatedContent = this.append(html, '', files);
 		} else if (fileType === 'css') {
 			sourceFileList.forEach(function (el) {
 				files += '<link ' + attrs + ' rel="stylesheet" href="' + el  + '">\n';
@@ -351,9 +356,7 @@ FrontendGenerator.prototype.browserify = function browserify() {
 		return;
 	}
 	this.copy('scripts/'+this.moduleLoader+'/app.'+this.frameworkSelected+'.js','app/scripts/app.js');
-	this.footerFile = this.appendFiles(this.footerFile, 'js','scripts/main.js', ['scripts/main.js'], {
-		'data-main': 'main'
-	});
+	this.footerFile = this.appendFiles(this.footerFile, 'js',undefined, ['scripts/main.js']);
 }
 
 FrontendGenerator.prototype.requirejs = function requirejs() {

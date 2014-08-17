@@ -387,7 +387,7 @@ module.exports = function (grunt) {
 
                 // When parseFiles = true, this task will crawl all *.js, *.css, *.scss files, except files that are in node_modules/.
                 // You can override this by defining a 'files' array below.
-                'files': {src: ['<%%= requirejs.all.options.out %>', '.tmp/uncss/**/*.css'] },
+                'files': {src: [<% if (moduleLoader === 'requirejs') { %>'<%%= requirejs.all.options.out %>' <% } else if (moduleLoader === 'browserify') { %>'<%%= yeoman.dist %>/scripts/main.js'<% } %>, '.tmp/uncss/**/*.css'] },
 
                 // When parseFiles = true, matchCommunityTests = true will attempt to
                 // match user-contributed tests.
@@ -757,8 +757,7 @@ module.exports = function (grunt) {
         'autoprefixer',
         'concat',<% if (moduleLoader === 'requirejs') { %>
         'requirejs',<% } else if (moduleLoader === 'browserify') { %>
-        'browserify:dist',
-        'uglify:dist',<% } %>
+        'browserify:dist',<% } %>
         'modernizr',
         'uglify',
         'copy:dist',

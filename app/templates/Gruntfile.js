@@ -581,6 +581,9 @@ module.exports = function (grunt) {
             dist: {<% if (php2htmlChoice === true) { %>
                 path: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/index.html'<% } else { %>
                 path: 'http://<%%= connect.options.hostname %>:<%%= connect.options.port %>/index.php'<% } %>
+            },
+            report: {
+                path: 'docs/complexity/index.html'
             }
         },
         connect: {
@@ -767,6 +770,11 @@ module.exports = function (grunt) {
         'usemin',
         'prettify'<% if (php2htmlChoice === true) { %>,
         'htmlmin'<% } %>
+    ]);
+
+    grunt.registerTask('report', [
+        'plato',
+        'open:report'
     ]);
 
     grunt.registerTask('default', [<% if (moduleLoader === 'requirejs') { %>

@@ -284,8 +284,7 @@ module.exports = function (grunt) {
                     useStrict               : true,
                     wrap                    : true,
                     optimize                : 'uglify2',
-                    generateSourceMaps      : true,
-                    useSourceUrl            : true
+                    generateSourceMaps      : true
                 }
             }
         },<% } else if (moduleLoader === 'browserify') { %>

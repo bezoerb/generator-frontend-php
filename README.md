@@ -35,6 +35,7 @@ Generate static html files using php with the power of that nice gentleman.
 * CSS and JS minification
 * Strip unused CSS with grunt-uncss
 * Image optimization
+* Picturefill
 * HTML and JS linting
 * Custom Modernizr build
 

@@ -29,7 +29,7 @@ Generate static html files using php with the power of that nice gentleman.
 * Integration of PureCSS, Bootstrap or Foundation
 * Compiling PHP templates to HTML
 * Compiling Sass and Less
-* RequireJS or Browserify (Browserify is currently not working on windows)
+* RequireJS or Browserify
 * JS testing with Mocha, Qunit, Jasmine or DalekJS
 * Plato Reports
 * CSS and JS minification

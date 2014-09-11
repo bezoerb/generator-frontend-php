@@ -363,7 +363,7 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 	if (this.moduleLoader !== 'requirejs') {
 		return;
 	}
-	var requiredScripts = ['app', 'jquery'];
+	var requiredScripts = ['app', 'jquery','picturefill'];
 	var inlineRequire = '';
 	var logCmd = '';
 	var templateLibraryPath;
@@ -425,7 +425,14 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 		'        loglevel: \'loglevel/dist/loglevel.min\''+templateLibraryPath,
 		'    shim: {',
 		templateLibraryShim,
-		'    }',
+		'    },',
+    '    packages: [',
+    '        {',
+    '            name: \'picturefill\',',
+    '            main: \'dist/picturefill.js\',',
+    '            location: \'picturefill\'',
+    '        }',
+    '    ]',
 		'};'
 	].join('\n'));
 

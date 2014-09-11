@@ -356,8 +356,12 @@ FrontendGenerator.prototype.browserify = function browserify() {
 		return;
 	}
 	this.copy('scripts/'+this.moduleLoader+'/app.'+this.frameworkSelected+'.js','app/scripts/app.js');
-	this.footerFile = this.appendFiles(this.footerFile, 'js',undefined, ['scripts/main.js']);
-}
+  this.footerFile = this.appendFiles(this.footerFile, 'js',undefined, ['scripts/main.js']);
+
+  // Adds picturefill as separate script
+  // should be integrated in browserify when https://github.com/scottjehl/picturefill/pull/252 is resolved
+	this.footerFile = this.appendFiles(this.footerFile, 'js','scripts/vendor/picturefill.js', ['bower_components/picturefill/dist/picturefill.js']);
+};
 
 FrontendGenerator.prototype.requirejs = function requirejs() {
 	if (this.moduleLoader !== 'requirejs') {

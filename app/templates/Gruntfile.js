@@ -290,7 +290,7 @@ module.exports = function (grunt) {
         },<% } else if (moduleLoader === 'browserify') { %>
         browserify: {
             options: {
-                bundleOptions: {
+                browserifyOptions: {
                     standalone: 'main'
                 },
                 preBundleCB: function (b) {
@@ -318,7 +318,7 @@ module.exports = function (grunt) {
                 dest: '.tmp/scripts/main.js',
                 options: {
                     watch: true,
-                    bundleOptions: {
+                    browserifyOptions: {
                         standalone: 'main',
                         debug: true
                     }

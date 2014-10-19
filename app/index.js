@@ -529,7 +529,7 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 	} else if(this.frameworkSelected == 'bootstrap') {
 		// Add Twitter Bootstrap scripts
 		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
-			'bower_components/bootstrap/dist/bootstrap.css','styles/main.css'
+			'bower_components/bootstrap/dist/css/bootstrap.css','styles/main.css'
 		]);
 		defaults.push('Bootrstrap');
 	} else if(this.frameworkSelected == 'pure') {

@@ -621,8 +621,8 @@ FrontendGenerator.prototype.app = function app() {
 	}
 
     // bootstrap variable tweaking
-    if (this.preprocessorSelected === 'scss' && (this.frameworkSelected === 'bootstrap' || this.frameworkSelected === 'foundation')) {
-        this.copy('scss/variables.scss','app/styles/variables.scss');
+    if (this.preprocessorSelected === 'sass' && (this.frameworkSelected === 'bootstrap' || this.frameworkSelected === 'foundation')) {
+        this.template('scss/variables.scss', 'app/styles/variables.scss');
     }
 
 

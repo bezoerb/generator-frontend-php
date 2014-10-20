@@ -123,8 +123,8 @@ var FrontendGenerator = module.exports = function FrontendGenerator(args, option
 		this.installDependencies({ skipInstall: options['skip-install'], callback: function(){
             // if using bootstrap, copy icon fonts from bower directory to app
             if (this.frameworkSelected === 'bootstrap' && !this.skipInstall) {
-								var pkg = this.preprocessorSelected === 'sass' ? 'sass-bootstrap' : 'bootstrap',
-                 		src = path.join(this.destinationRoot(),'app/bower_components/'+pkg+'/fonts'),
+                var pkg = this.preprocessorSelected === 'sass' ? 'bootstrap-sass-official' : 'bootstrap',
+                    src = this.preprocessorSelected === 'sass' ? path.join(this.destinationRoot(),'app/bower_components/'+pkg+'/assets/fonts') : path.join(this.destinationRoot(),'app/bower_components/'+pkg+'/fonts'),
                     dest = path.join(this.destinationRoot(),'app/fonts');
 
                 fs.copyRecursive(src,dest, function(){});
@@ -372,12 +372,16 @@ FrontendGenerator.prototype.requirejs = function requirejs() {
 	var logCmd = '';
 	var templateLibraryPath;
 	var templateLibraryShim;
-	if(this.frameworkSelected == 'bootstrap') {
+	if(this.frameworkSelected === 'bootstrap') {
 		requiredScripts.push('bootstrap');
 		logCmd = '            log.debug(\' + Bootstrap \', \'3.0.0\');';
-		templateLibraryPath = ',\n        bootstrap: \'../bower_components/bootstrap/dist/js/bootstrap\'\n    },';
+        if (this.preprocessorSelected === 'sass') {
+            templateLibraryPath = ',\n        bootstrap: \'../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap\'\n    },';
+        } else {
+            templateLibraryPath = ',\n        bootstrap: \'../bower_components/bootstrap/dist/js/bootstrap\'\n    },';
+        }
 		templateLibraryShim = '        bootstrap: {deps: [\'jquery\'], exports: \'jquery\'}';
-	} else if(this.frameworkSelected == 'foundation') {
+	} else if(this.frameworkSelected === 'foundation') {
 		requiredScripts.push('foundation/foundation');
 		logCmd = '            log.debug(\'  + Foundation %s\', Foundation.version);';
 		templateLibraryPath = ',\n        foundation: \'../bower_components/foundation/js/foundation\'\n    },';
@@ -520,18 +524,18 @@ FrontendGenerator.prototype.writeIndex = function writeIndex() {
 		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/main.css'
 		]);
-		defaults.push('Bootrstrap');
+		defaults.push('Bootstrap');
 	} else if (this.preprocessorSelected == 'less' && this.frameworkSelected == 'bootstrap') {
 		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'styles/main.css'
 		]);
-		defaults.push('Bootrstrap');
+		defaults.push('Bootstrap');
 	} else if(this.frameworkSelected == 'bootstrap') {
 		// Add Twitter Bootstrap scripts
 		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
 			'bower_components/bootstrap/dist/css/bootstrap.css','styles/main.css'
 		]);
-		defaults.push('Bootrstrap');
+		defaults.push('Bootstrap');
 	} else if(this.frameworkSelected == 'pure') {
         this.copy('layouts/pure/stylesheets/marketing.css', 'app/styles/marketing.css');
 		this.headerFile = this.appendStyles(this.headerFile, 'styles/main.css', [
@@ -615,6 +619,11 @@ FrontendGenerator.prototype.app = function app() {
 		this.copy('less/bootstrap.less','app/styles/bootstrap.less');
 		this.copy('less/variables.less','app/styles/variables.less');
 	}
+
+    // bootstrap variable tweaking
+    if (this.preprocessorSelected === 'scss' && (this.frameworkSelected === 'bootstrap' || this.frameworkSelected === 'foundation')) {
+        this.copy('scss/variables.scss','app/styles/variables.scss');
+    }
 
 
 	this.mkdir('app/images');

@@ -1,0 +1,5 @@
+// Overwrite <% if (frameworkSelected == 'bootstrap') { %>bootstrap<% } else if (frameworkSelected == 'foundation') { %>foundation<% } %> variables to fit your needs
+<% if (frameworkSelected == 'bootstrap') { %>// See: ../bower_components/bootstrap-sass-official/assets/stylesheets/bootstrap/_variables.scss for a list of all variables<% } else if (frameworkSelected == 'foundation') { %>
+// See: ../bower_components/foundation/scss/foundation/_settings.scss for a list of all variables<% } %>
+
+

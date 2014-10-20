@@ -1,5 +1,6 @@
+<% if (frameworkSelected == 'bootstrap' || frameworkSelected == 'foundation') { %>@import "variables";<% } %>
 <% if (frameworkSelected == 'bootstrap') { %>
-@import "../bower_components/sass-bootstrap/lib/bootstrap";
+@import "../bower_components/bootstrap-sass-official/assets/stylesheets/_bootstrap.scss";
 <% } else if (frameworkSelected == 'foundation') { %>
 @import "../bower_components/foundation/scss/foundation";
 <% } %>

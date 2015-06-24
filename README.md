@@ -64,7 +64,7 @@ The `php-cgi` binary can be installed via Homebrew by tapping the
 
 ```shell
 brew tap homebrew/dupes
-brew tap josegonzalez/homebrew-php
+brew tap homebrew/homebrew-php
 brew install php54
 ```
 
